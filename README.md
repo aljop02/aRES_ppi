@@ -18,18 +18,22 @@ mechanism open.
 | Doc | What it is |
 |---|---|
 | [`docs/01_paper_summary_osterman2026.md`](docs/01_paper_summary_osterman2026.md) | Structured summary of the paper: results, methods constraints, and a list of what it does *not* establish |
-| [`docs/02_hypothesis_NTD1_sensor.md`](docs/02_hypothesis_NTD1_sensor.md) | The hypothesis, the evidence for it, the structural lead, alternatives to exclude, numbered predictions P1–P7 |
+| [`docs/02_hypothesis_NTD1_sensor.md`](docs/02_hypothesis_NTD1_sensor.md) | The hypothesis, the evidence for it, alternatives to exclude, numbered predictions P1–P9 |
 | [`docs/03_computational_plan.md`](docs/03_computational_plan.md) | Tiered plan T0–T6, ordered by information per unit effort |
 | [`docs/04_data_inventory.md`](docs/04_data_inventory.md) | Every sequence/structure/supplement needed, with accessions and acquisition status |
+| **[`docs/05_status_after_vault_integration.md`](docs/05_status_after_vault_integration.md)** | **Current state.** Reconciles `01`–`04` with the existing work in `notes/vault/`, corrects what they got wrong, and gives the revised priority order. **Read this one first if you only read one.** |
+
+`notes/vault/` is the Obsidian vault of prior work (notes + PyMOL/PAE figures), kept under version
+control as the project record.
 
 ## The three things worth knowing up front
 
-**1. Both T7 escape mutations land in one small structural element.**
-The escape mutants are gp5 **S122P** and **D106G**. Residues ~102–122 of gp5 form **insertion1**, a
-helix-loop-helix in the proofreading exonuclease domain. Two independently isolated escape mutations
-converging on one ~20-residue surface element is a strong lead, and it is not discussed in the paper.
-→ **P1: insertion1 is the epitope aRES reads.** Use it to filter docking output.
-Details and caveats in [hypothesis §3](docs/02_hypothesis_NTD1_sensor.md).
+**1. The two escape mutations are one mechanism, and the cofold already supports it.**
+gp5 **S122P** and **D106G** both escape aRES. In the existing cofold, gp5 **Ser122 OG** hydrogen-bonds
+to aRES **Asp104** (3.06 Å) — and Asp104 sits inside the NTD-1 block. Meanwhile **Asp106** caps the
+**Gly121** backbone amide *within* gp5 (2.71 Å). So: **D106 is the scaffold that presents the loop,
+S122 is the contact.** That explains why two chemically unrelated mutations 16 residues apart give the
+same phenotype. → [status §2](docs/05_status_after_vault_integration.md).
 
 **2. T7 DNA polymerase is a heterodimer, and the activating species was the holoenzyme.**
 gp5 (704 aa) binds host *E. coli* **thioredoxin** as its processivity factor. The enzyme used in the
@@ -37,11 +41,16 @@ paper's in vitro activation experiment (NEB M0274S) is the **gp5·TrxA complex**
 Docking gp5 by itself may be docking the wrong species.
 → [hypothesis §4](docs/02_hypothesis_NTD1_sensor.md).
 
-**3. The best experiment is genetics, not docking.**
-Swap NTD-1 between aRES homologs with different phage ranges and ask whether specificity follows
-NTD-1. Binary readout, uses only assays the lab already runs, and does not depend on any prediction
-being correct. **Start the cloning in parallel with the computational work, not after it.**
-→ P2 in [hypothesis §5](docs/02_hypothesis_NTD1_sensor.md).
+**3. The decisive experiments are cheap and need no mutant phages.**
+The paper's co-expression toxicity assay (Fig. 4G) and pull-down (Fig. 4H) are both plasmid-based, so
+every gp5 and aRES point mutant is just site-directed mutagenesis. Two to run first:
+**gp5 S122A** (removes the hydroxyl donor without proline's backbone rigidity → separates direct
+contact from loop conformation) and **aRES D104A** (the reciprocal test, and the first functional
+test ever aimed at PF18870). → [status §4](docs/05_status_after_vault_integration.md).
+
+Longer lead time but the cleanest test of the central hypothesis: swap NTD-1 between aRES homologs
+with different phage ranges and ask whether specificity follows NTD-1 (P2,
+[hypothesis §5](docs/02_hypothesis_NTD1_sensor.md)). **Start that cloning in parallel, not after.**
 
 ## Status
 
@@ -49,10 +58,13 @@ being correct. **Start the cloning in parallel with the computational work, not 
 - [x] Hypothesis formalized with falsifiable predictions
 - [x] Computational plan drafted
 - [x] Interface-analysis tooling written and tested
-- [ ] **Sequences and structures acquired** ← blocking everything below
-- [ ] T0: pipeline validated against the published aRES–aRad1 control
-- [ ] T1: aRES × T7 gp5 co-folding
-- [ ] T4: NTD-1 conservation / specificity-determining positions
+- [x] Prior work integrated (`notes/vault/`): domain boundaries, aRES×gp5 cofold, MD plan
+- [ ] **Confirm the Fig. 1B specificity claim** (does *E. chengduensis* aRES really not respond to T7?)
+- [ ] Re-measure the three mutation panels with a consistent atom pair
+- [ ] gp5 variant panel (S122A, D106A/N, G121A) through the 4G/4H assays
+- [ ] aRES D104A/D104N — first functional test of PF18870
+- [ ] NTD-1 domain-swap chimeras (long lead time — start now)
+- [ ] Supplementary Tables S2/S3/S4 acquired → conservation analysis
 
 Nothing in this repo contains invented sequences, structures or results. Uncertain values are marked
 "VERIFY" in the data inventory.

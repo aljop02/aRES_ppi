@@ -1,5 +1,15 @@
 # Hypothesis: PF18870 (NTD-1) is a modular phage-protein sensor domain
 
+> **Update (Oct 12, 2026).** This document was written before the existing work in `notes/vault/`
+> was available. It is still correct in its logic, but two things are now better established and
+> one framing here is superseded — see **`05_status_after_vault_integration.md`**:
+> - The existing aRES×gp5 cofold already places gp5 **Ser122** in H-bond contact with aRES
+>   **Asp104**, which lies inside the N-terminal block → P1 and H1 are supported.
+> - **PDB 1T7P lacks residues 118–123**, so the epitope loop is not in any experimental structure.
+>   The "well-defined helix-loop-helix" framing in §3 below overstates what is known.
+> - Real domain boundaries: N-block **1–120**, hinge 120–125, RES side **126–447**
+>   (InterPro: PF18870 49–136, PF00808 199–363).
+
 Working document for the wet-lab rotation. Status labels used throughout:
 **[FACT]** = shown in Osterman et al. 2026 or another cited paper ·
 **[INFERENCE]** = my reasoning from facts, testable ·
@@ -282,6 +292,12 @@ Listed so they are on record before the data comes in.
 | **P5** | Mutating that patch kills defense but preserves NADase | plaque assay + NAD⁺ assay, vs. R182A control | medium |
 | **P6** | RES domain alone is constitutively toxic (autoinhibition) | single construct, toxicity assay | low |
 | **P7** | HEPN-NTD1 proteins are also phage-triggered defense systems | bioinformatics first, then cloning | high |
+| **P8** | gp5 **S122A** discriminates direct contact from backbone rigidity | co-expression toxicity (Fig. 4G) + pull-down (Fig. 4H) | **low — best ratio in the project** |
+| **P9** | aRES **D104A/D104N** lose responsiveness to WT gp5 but keep NADase | 4G/4H + NAD⁺ assay, vs R182A/E236A controls | low |
+
+P8 and P9 come out of the cofold result in `notes/vault/` — see
+`05_status_after_vault_integration.md` §4, which also explains why neither needs mutant phages.
+P9 would be the **first functional test ever aimed at PF18870**.
 
 **P5 carries a critical control design note:** an NTD-1 mutant that abolishes defense is only
 interesting if the protein is still a competent NADase. You must show loss of *defense* with

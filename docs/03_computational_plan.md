@@ -47,9 +47,21 @@ purifiable (UC5 is not — see `01_paper_summary_osterman2026.md` §4).
 | T1.5 | aRES **RES domain only** | T7 gp5 full | control; should be *worse* if H1 holds |
 | T1.6 | aRES S_34AVR full | T7 gp5 **exonuclease domain only** (~1–180) | tests P1 with a reduced search space |
 
-5 AF3 models each. Domain boundaries for T1.4/T1.5 from the Pfam/InterPro assignment — take the
-PF18870 and PF00808 envelopes, extend to the nearest structural break in the AF model of
-full-length aRES rather than cutting at the exact Pfam coordinate.
+5 AF3 models each.
+
+**Domain boundaries for T1.4/T1.5 — use the PAE-derived ones, not the Pfam ones.** From the AF3 PAE
+analysis in `notes/vault/` (see `05_status_after_vault_integration.md` §1.1):
+
+| Construct | Residues |
+|---|---|
+| **NTD-1 / N-block** | **1–120** (or 1–124) |
+| **RES side** | **126–447** (retains R182, R184) |
+| Full length | 1–459 |
+| Tail-trimmed | 1–447 |
+
+InterPro calls PF18870 at **49–136** and PF00808 at **199–363**, but the structural module runs
+1–120 with a hinge at 120–125. Cutting at the Pfam coordinates would slice through a folded block
+at one end and through the hinge at the other. Numbering is for ***E. coli* UC5**.
 
 ### What to record for each run
 

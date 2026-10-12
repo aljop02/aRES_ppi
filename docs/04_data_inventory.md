@@ -93,14 +93,21 @@ which should contain the cloned ORFs directly.
 
 | Structure | ID | Status | Use |
 |---|---|---|---|
-| T7 DNApol·TrxA·DNA·ddNTP | **PDB 1T7P** | ✅ confirmed | The docking input. 2.2 Å, Doublié et al. 1998 *Nature* 391:251–258, PMID 9440688, DOI [10.1038/34593](https://doi.org/10.1038/34593). Contains a 698-residue T7 pol chain + 108-residue *E. coli* TrxA + 2 DNA strands. **Strip the DNA before docking.** |
+| T7 DNApol·TrxA·DNA·ddNTP | **PDB 1T7P** | ✅ confirmed, ⚠️ **but see below** | 2.2 Å, Doublié et al. 1998 *Nature* 391:251–258, PMID 9440688, DOI [10.1038/34593](https://doi.org/10.1038/34593). 698-residue T7 pol chain + 108-residue *E. coli* TrxA + 2 DNA strands. **Strip the DNA.** |
 | Other T7 pol structures | 1T8E, 1X9S, 1X9M, 1TK5, 1SL2 — VERIFY | ⚠️ | Alternative conformations; useful for ensemble docking. IDs seen in CATH listings, not individually checked. |
 | aRES | none exists | ❌ | Must be predicted (AF3/AF2). |
 | aRES–aRad1 | none deposited | ❌ | The paper's Fig. 4A model was AF3; not deposited. Must re-predict → that *is* T0.1. |
 
-Note on 1T7P: only 698 of ~704 residues are modelled, so **expect missing termini/loops**. Check
-whether insertion1 (102–122) is fully resolved — if it is not, that itself is informative (a
-flexible epitope), and it changes how you should treat it in HADDOCK.
+> ### ⚠️ 1T7P does **not** contain the epitope loop
+>
+> **1T7P carries a deletion of residues 118–123**, so **Gly121 and Ser122 are absent from it.**
+> The surrounding stretch (~120–150) is a T7-specific insertion relative to Klenow and is flexible
+> and poorly templated. (Established in `notes/vault/MD Plan ...md`.)
+>
+> Consequence: **the loop the whole hypothesis rests on exists only in AlphaFold models.** Use 1T7P
+> to validate the rest of the fold and to check AF models by superposition *outside* 118–123 — not
+> as the docking input for the interface region. This is a real limitation of the structural
+> evidence and belongs in any write-up, not just in the methods.
 
 ---
 
