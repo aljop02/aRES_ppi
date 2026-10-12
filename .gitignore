@@ -1,0 +1,30 @@
+# Papers — copyrighted; see README "Note on refs/"
+refs/*.pdf
+refs/*.PDF
+
+# Large / regenerable structure and sequence data
+data/structures/*.pdb
+data/structures/*.cif
+data/structures/*.mmcif
+!data/structures/.gitkeep
+
+# Docking and prediction output (keep the summaries in results/, not the raw runs)
+analysis/docking/**/*.pdb
+analysis/afold/**/*.cif
+analysis/afold/**/*.pdb
+analysis/afold/**/*.zip
+
+# Alignments can get large; keep curated ones by force-adding
+analysis/conservation/*.a3m
+analysis/conservation/*.sto
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.ipynb_checkpoints/
+
+# OS
+.DS_Store
+Thumbs.db
