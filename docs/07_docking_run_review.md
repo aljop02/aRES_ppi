@@ -26,6 +26,12 @@ far shorter.
 
 The other three cysteines in aRES (C78, C96, C249) are isolated — no second 4-Cys cluster exists.
 
+> **Update (Oct 12, 2026): an AF3 run with Zn²⁺ supplied puts the metal on exactly these four
+> cysteines** — Zn–SG 2.04–2.49 Å, S–Zn–S mean 108.9°, Zn pLDDT 95.9, no clashes. That confirms the
+> pocket accepts a metal in the predicted geometry, but **the Zn was an input, so it is not
+> independent evidence that aRES binds one.** Numbers, caveats and the plan to close the gap:
+> **[`docs/08_metal_site_validation.md`](08_metal_site_validation.md)**.
+
 **Negative control:** the same test on the T7 gp5 model finds **10 cysteines and no cluster at all**
 — the closest SG–SG pair is 7.85 Å, twice the zinc distance. So the method is not simply calling a
 site wherever cysteines occur.
@@ -34,21 +40,71 @@ This confirms, for aRES specifically, the observation in
 [Anantharaman et al. 2013](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3710099/) that some
 RES-fused PF18870 proteins carry an **additional N-terminal Zn ribbon**.
 
+### ⚠️ This is a structural claim, and sequence databases will not reproduce it
+
+Running the aRES FASTA through CDD, InterPro or Pfam does **not** return a zinc-binding domain, and
+that is the expected result, not a contradiction. The claim above comes from measuring SG···SG
+distances in the AlphaFold model. Profile-HMM searches never see coordinates.
+
+Three reasons the HMMs miss it specifically:
+
+1. **Zinc ribbons are close to invisible to profile methods.** They are ~25–40 aa with essentially
+   no sequence conservation beyond the Cys spacing itself. There is almost no signal to build a
+   profile from, which is why they are among the worst-covered elements in Pfam and are normally
+   found by structure comparison or by HHpred rather than by RPS-BLAST.
+2. **CDD's default "Concise Results" view hides weak hits.** Switch to **Full Results** and raise
+   the E-value threshold before concluding anything is absent.
+3. **48 residues inside a 459-residue query is diluted.** Composition-based statistics penalise a
+   short local element in a long sequence. Submitting **residues 1–60 alone** is a materially
+   different search.
+
+A CDD run on the full-length sequence (Oct 2026) returned exactly two hits, and the *intervals* are
+more informative than the absence:
+
+| Hit | Accession | Interval | E-value |
+|---|---|---|---|
+| RES | pfam08808 | 207–354 | 1.12e-11 |
+| HEPN_RES_NTD1 **superfamily** | cl40151 | **29–144** | 1.04e-03 |
+
+Residues **1–28 carry no annotation from any source** — that is where C8 and C11 sit. And the NTD-1
+call starts at **29**, not 49, which matters for the boundary argument below.
+
+> **Accession correction.** That CDD run also settles a mistake this repo introduced. `docs/05` §1.1
+> "corrected" the vault's **PF08808** to PF00808 and the error propagated into `docs/01`, `02`, `03`
+> and this document. **PF08808 is the RES domain and was right all along**; PF00808 is
+> `CBFD_NFYB_HMF`, a histone-fold family with no relationship to aRES. All occurrences are now
+> fixed. Lesson worth keeping: the vault's primary annotation beat the tidy-up.
+
 ### Why it matters
 
-**The N-terminal block is bimodular.** It resolves the discrepancy noted in `docs/05` §1.1 between
-the structural block (1–120) and the Pfam call (49–136):
+**The N-terminal block is probably bimodular.** It offers a reading of the discrepancy noted in
+`docs/05` §1.1 between the structural block (1–120) and the Pfam call (49–136):
 
 ```
 1 ────────── 48 │ 49 ─────────── 120 │ 121-125 │ 126 ──────────── 447 │ 448-459
    Zn ribbon    │   PF18870 (NTD-1)  │  hinge  │   RES side block     │  tail
-   C8 C11 C31 C34                                PF00808: 199-363
+   C8 C11 C31 C34                                PF08808: 199-363
 └──── structural N-block 1-120 (AF3 PAE) ────┘
 ```
 
-**InterPro's PF18870 call starts at residue 49 — exactly where the Zn ribbon ends.** The two
-annotations are not in conflict; they are describing two different modules that the PAE analysis
-saw as one compact block.
+**How firm is the 48/49 boundary? Less firm than this diagram makes it look.** The three sources
+disagree about where NTD-1 starts:
+
+| Source | NTD-1 starts at |
+|---|---|
+| InterPro PF18870 | 49 |
+| CDD cl40151 superfamily | **29** |
+| AF3 PAE structural block | 1 (sees 1–120 as one unit) |
+
+InterPro's 49 coincides with the end of the Zn ribbon, which is where the bimodular reading came
+from — but CDD places the same family starting at 29, which cuts straight through the C31/C34 pair.
+**One annotation's boundary agreeing with the Cys cluster is suggestive, not established.** Both
+calls are weak at their N-terminus, which is exactly the region in question.
+
+What survives regardless of which boundary is right: residues 1–48 contain a four-cysteine cluster
+with metal-site geometry, and the AF3 PAE sees 1–120 as one compact block. Whether that block is
+"ribbon + NTD-1" or "one domain with an integral metal site" is open — and it changes what a 49–120
+construct would actually be. See `docs/08` for how to settle it.
 
 ### Practical consequences
 
@@ -67,11 +123,28 @@ saw as one compact block.
    docking interface lands on 1–48 rather than 49–120, that is a different hypothesis, not a
    failure — but see point 3 before believing it.
 
+### Two caveats on the evidence itself
+
+**The metal identity is inferred, not measured.** What the geometry demonstrates is a *mononuclear
+tetrathiolate site*. Zn is the most likely occupant given cellular abundance and the Anantharaman
+precedent, but rubredoxin-type Fe(Cys)₄ has near-identical geometry and is not excluded by distance
+alone. A [4Fe-4S] cluster **is** excluded — those put SG···SG around 6.5 Å, not 3.7 Å. Write
+"Zn(Cys)₄" in notes, but "a tetrathiolate metal site, most likely Zn" in anything that goes to a
+reviewer.
+
+**It is one prediction, not a measurement.** AlphaFold reproduces metal-site geometry without
+modelling the metal, because it learned the fold from holo structures in the PDB — that is precisely
+why the agreement is informative. But 0.09 Å is a statement about one model against an idealised
+geometry, not about the protein in a tube. Everything in "practical consequences" above is
+deliberately conservative so that it holds either way.
+
 Reproduce with:
 
 ```bash
 python3 analysis/scripts/zn_site_check.py <ares_model.pdb>
 ```
+
+**→ `docs/08` is the plan for turning this from one model's geometry into an established fact.**
 
 ---
 

@@ -28,3 +28,6 @@ venv/
 # OS
 .DS_Store
 Thumbs.db
+
+# AF3 per-token data is large and regenerable; keep the summary confidences
+analysis/afold/**/*full_data*.json

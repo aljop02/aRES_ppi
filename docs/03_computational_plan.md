@@ -59,7 +59,7 @@ analysis in `notes/vault/` (see `05_status_after_vault_integration.md` §1.1):
 | Full length | 1–459 |
 | Tail-trimmed | 1–447 |
 
-InterPro calls PF18870 at **49–136** and PF00808 at **199–363**, but the structural module runs
+InterPro calls PF18870 at **49–136** and PF08808 at **199–363**, but the structural module runs
 1–120 with a hinge at 120–125. Cutting at the Pfam coordinates would slice through a folded block
 at one end and through the hinge at the other. Numbering is for ***E. coli* UC5**.
 
@@ -156,12 +156,12 @@ If one thing gets done, make it this.
 
 ### T4.1 Build the homolog set
 Source: paper Tables **S2/S3** (1,526 genomes with aRES). If those tables are not obtainable,
-reproduce the authors' detection (Methods §"Detection of putative aRES systems"): PF00808 candidates,
-300–600 aa, hhblits/UniRef30 MSA, hhsearch vs Pfam v35, require **both** PF00808 and PF18870 at
+reproduce the authors' detection (Methods §"Detection of putative aRES systems"): PF08808 candidates,
+300–600 aa, hhblits/UniRef30 MSA, hhsearch vs Pfam v35, require **both** PF08808 and PF18870 at
 p > 80%.
 
 ### T4.2 Two alignments, deliberately
-1. **NTD-1 from aRES proteins** (PF18870 + PF00808 architecture)
+1. **NTD-1 from aRES proteins** (PF18870 + PF08808 architecture)
 2. **NTD-1 from HEPN proteins** (PF18870 + HEPN architecture)
 
 Aligning both and comparing is what tests **H2**. If NTD-1 is a modular sensor, the two sets should

@@ -8,7 +8,7 @@
 > - **PDB 1T7P lacks residues 118–123**, so the epitope loop is not in any experimental structure.
 >   The "well-defined helix-loop-helix" framing in §3 below overstates what is known.
 > - Real domain boundaries: N-block **1–120**, hinge 120–125, RES side **126–447**
->   (InterPro: PF18870 49–136, PF00808 199–363).
+>   (InterPro: PF18870 49–136, PF08808 199–363).
 
 Working document for the wet-lab rotation. Status labels used throughout:
 **[FACT]** = shown in Osterman et al. 2026 or another cited paper ·

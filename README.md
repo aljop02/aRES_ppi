@@ -23,7 +23,8 @@ mechanism open.
 | [`docs/04_data_inventory.md`](docs/04_data_inventory.md) | Every sequence/structure/supplement needed, with accessions and acquisition status |
 | [`docs/05_status_after_vault_integration.md`](docs/05_status_after_vault_integration.md) | Reconciles `01`–`04` with the prior work in `notes/vault/`: real domain boundaries, the cofold result, and what the earlier docs got wrong |
 | **[`docs/06_phage_range_matrix.md`](docs/06_phage_range_matrix.md)** | **Current state.** Fig. 1B decoded, the chimera pair fixed, and the λ problem that breaks the polymerase model. **Read this one first if you only read one.** |
-| [`docs/07_docking_run_review.md`](docs/07_docking_run_review.md) | The Zn(Cys)₄ ribbon found in aRES, review of the blind-run parameters, and where blind vs restrained docking each help |
+| [`docs/07_docking_run_review.md`](docs/07_docking_run_review.md) | The Zn(Cys)₄ site found in aRES, review of the blind-run parameters, and where blind vs restrained docking each help |
+| [`docs/08_metal_site_validation.md`](docs/08_metal_site_validation.md) | The AF3-with-Zn run (metal lands on C8/C11/C31/C34), what it does **not** prove, and the Foldseek / HHpred / conservation plan to settle it |
 
 `notes/vault/` is the Obsidian vault of prior work (notes + PyMOL/PAE figures), kept under version
 control as the project record.
@@ -70,12 +71,15 @@ eight phages act as built-in folding controls in the same assay (P2,
 - [x] Interface-analysis tooling written and tested
 - [x] Prior work integrated (`notes/vault/`): domain boundaries, aRES×gp5 cofold, MD plan
 - [x] Fig. 1B decoded — GN04826 confirmed **not** to defend against T7; chimera pair fixed
+- [x] Zn(Cys)₄ site found in the apo model; AF3 with Zn²⁺ confirms the placement (`docs/08`)
+- [ ] **AF3 gp5 + Zn²⁺ negative control** — the step that makes the holo result non-circular (`docs/08` §3A)
+- [ ] **Foldseek + HHpred on residues 1–48 / 1–120** — independent test of the ribbon fold (`docs/08` §3B–C)
 - [ ] **λ P / O / Gam co-expression with UC5 aRES** — tests the non-polymerase trigger
 - [ ] **UC5 × GN04826 NTD-1 chimeras**, T7 readout (long lead time — start now)
 - [ ] gp5 S122A + aRES D104A through the 4G/4H assays
 - [ ] T2 vs T4 gp43 alignment — zero cost, natural specificity pair
 - [ ] Re-measure the three mutation panels with a consistent atom pair
-- [ ] Supplementary Tables S2/S3/S4 acquired → conservation analysis
+- [ ] Supplementary Tables S2/S3/S4 acquired → conservation analysis (C8/C11/C31/C34 **and** D104 in one alignment — `docs/08` §3D)
 
 Nothing in this repo contains invented sequences, structures or results. Uncertain values are marked
 "VERIFY" in the data inventory.
@@ -83,7 +87,7 @@ Nothing in this repo contains invented sequences, structures or results. Uncerta
 ## Repo layout
 
 ```
-docs/                  the four documents above
+docs/                  the numbered documents above, read in order
 data/
   sequences/           FASTA (record accession + date in SOURCE.md)
   structures/          PDB/mmCIF
@@ -128,6 +132,16 @@ loop or tail is worth docking.
 ```bash
 python3 analysis/scripts/zn_site_check.py ares_model.pdb \
     --regions 1-48:Zn-ribbon 49-120:NTD1 448-459:tail
+```
+
+[`analysis/scripts/zn_coordination.py`](analysis/scripts/zn_coordination.py) — the complementary
+test for models that **do** contain a metal: measures the first coordination shell, bond lengths and
+ligand–metal–ligand angles against ideal tetrahedral values. Handing AlphaFold a Zn²⁺ guarantees a Zn
+in the output; it does not guarantee the Zn went anywhere sensible, and this is how you tell.
+Reads mmCIF and PDB.
+
+```bash
+python3 analysis/scripts/zn_coordination.py analysis/afold/zn_holo/fold_ares_zn_model_0.cif
 ```
 
 ## Note on `refs/`

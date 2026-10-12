@@ -31,7 +31,7 @@ aRES (*E. coli* UC5) is **459 aa**, with two annotated Pfam domains (Fig. 1B):
 | Region | Pfam | Name | Status |
 |---|---|---|---|
 | N-terminal | **PF18870** | "HEPN/RES N-terminal domain 1" (NTD-1) | **uncharacterized** |
-| C-terminal | **PF00808** | RES | catalytic NADase |
+| C-terminal | **PF08808** | RES | catalytic NADase |
 
 The authors' own closing statement is the opening for this project:
 
@@ -156,11 +156,11 @@ shows, **never been run.** That is a concrete, cheap, novel experiment — see `
 ## 5. Detection of aRES systems (for homolog collection)
 
 - Source: ~135 M genes from ~38,000 bacterial/archaeal genomes (IMG, Oct 2017).
-- Candidates: annotated **PF00808**, or in protein clusters where PF00808 was the most abundant
+- Candidates: annotated **PF08808**, or in protein clusters where PF08808 was the most abundant
   annotation; length filter 300–600 aa.
 - MSAs via hhblits/UniRef30 (`-oa3m -n 3 -M first`), searched with hhsearch against Pfam v35
   (`-p 80 -loc -z 1 -b 1 -ssm 2 -sc 1 -seq 1`).
-- **Final criterion: hits to BOTH PF00808 and PF18870 with probability > 80%.**
+- **Final criterion: hits to BOTH PF08808 and PF18870 with probability > 80%.**
 - Result: aRES homologs in **~4% of genomes** — 1,526 of 38,149 (Fig. S7A, Tables S2 and S3).
 
 → **Tables S2/S3 are the homolog list this project needs for conservation analysis.**
