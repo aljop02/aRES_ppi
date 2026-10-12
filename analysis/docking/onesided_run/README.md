@@ -35,23 +35,28 @@ Relative solvent accessibility of the loop, computed on the isolated gp5 chain:
 | **S122** | **18.2%** | escape mutation — partly exposed, below the 40% active cutoff |
 | K103, D104, T105, R111, S112, G113, K114, G117, K118 | 42–80% | → active |
 
-**D106 at 0.6% cannot be in contact with aRES.** It is not solvent-reachable at all, so it
-is physically incapable of forming an intermolecular contact. Restraining it would drag the
-docking somewhere wrong.
+**D106 at 0.6% cannot be in contact with aRES.** It is not solvent-reachable at all, so
+restraining it would drag the docking somewhere wrong.
 
-This is independent confirmation of the two-step model in `docs/05_status_after_vault_integration.md`
-§2, arrived at from a completely different measurement:
+This is consistent with — but does **not** establish — the intramolecular role of D106. That
+was already hypothesis H1 in `notes/vault/MD Plan ...md` ("Asp106 carboxylate caps the Gly121
+N-H … D106G removes the cap and adds backbone flexibility"), proposed before this calculation
+was run. The SASA figures were computed to decide the restraint lists, and that is what they
+settle. They rule out D106 being *additionally* a direct contact, which nobody had proposed.
 
-> **D106 is the scaffold, S122 is the contact.** D106 caps the G121 backbone amide *inside*
-> gp5 (2.71 Å in the WT model) and holds the loop in the conformation that presents S122.
-> It escapes indirectly. S122, at 18.2% exposure, is partly reachable and donates its OG to
-> aRES D104 in the cofold — it escapes directly.
-
-Burial was derived here from geometry alone, with no reference to the H-bond analysis that
-produced the same conclusion. Two independent routes to the same mechanism.
+The more informative number is **S122 at 18.2%**. Partly exposed means the OG→aRES D104
+hydrogen bond is geometrically possible but not generous — a real constraint on H2, since the
+contact residue does not sit freely on the surface.
 
 S122 is therefore **passive**, not active: passive residues can contribute to the interface
 without being forced into it, which is the right treatment for a partly buried contact residue.
+
+**What would actually test H1** is a side-chain-independent comparison across the WT, D106G and
+S122P models — Cα(106)–Cα(121) distance plus backbone RMSD over 100–125 — which is defined for
+glycine too, unlike the OD2/CB/N measurements in the three PyMOL panels
+(`docs/05` §3). If D106G acts by destabilising the loop while S122P deletes a contact, the two
+should also behave *differently* in a pull-down; if both simply fail to bind, the two-step
+picture is too simple.
 
 ## Analysis when it finishes
 
