@@ -21,7 +21,8 @@ mechanism open.
 | [`docs/02_hypothesis_NTD1_sensor.md`](docs/02_hypothesis_NTD1_sensor.md) | The hypothesis, the evidence for it, alternatives to exclude, numbered predictions P1–P9 |
 | [`docs/03_computational_plan.md`](docs/03_computational_plan.md) | Tiered plan T0–T6, ordered by information per unit effort |
 | [`docs/04_data_inventory.md`](docs/04_data_inventory.md) | Every sequence/structure/supplement needed, with accessions and acquisition status |
-| **[`docs/05_status_after_vault_integration.md`](docs/05_status_after_vault_integration.md)** | **Current state.** Reconciles `01`–`04` with the existing work in `notes/vault/`, corrects what they got wrong, and gives the revised priority order. **Read this one first if you only read one.** |
+| [`docs/05_status_after_vault_integration.md`](docs/05_status_after_vault_integration.md) | Reconciles `01`–`04` with the prior work in `notes/vault/`: real domain boundaries, the cofold result, and what the earlier docs got wrong |
+| **[`docs/06_phage_range_matrix.md`](docs/06_phage_range_matrix.md)** | **Current state.** Fig. 1B decoded, the chimera pair fixed, and the λ problem that breaks the polymerase model. **Read this one first if you only read one.** |
 
 `notes/vault/` is the Obsidian vault of prior work (notes + PyMOL/PAE figures), kept under version
 control as the project record.
@@ -41,6 +42,13 @@ paper's in vitro activation experiment (NEB M0274S) is the **gp5·TrxA complex**
 Docking gp5 by itself may be docking the wrong species.
 → [hypothesis §4](docs/02_hypothesis_NTD1_sensor.md).
 
+**2b. λ-vir has no DNA polymerase — yet two of the three aRES proteins defend against it.**
+λ replicates with host Pol III; its only replication proteins are O and P. So **at least one aRES
+trigger is not a polymerase**, and the paper's framing holds for T7 but is not the general rule.
+Possible resolution: NTD-1 may sense phage proteins that *hijack host replication factors* —
+T7 gp5 captures thioredoxin, λ P captures DnaB. Testable in one co-expression assay.
+→ [matrix §2](docs/06_phage_range_matrix.md).
+
 **3. The decisive experiments are cheap and need no mutant phages.**
 The paper's co-expression toxicity assay (Fig. 4G) and pull-down (Fig. 4H) are both plasmid-based, so
 every gp5 and aRES point mutant is just site-directed mutagenesis. Two to run first:
@@ -48,9 +56,10 @@ every gp5 and aRES point mutant is just site-directed mutagenesis. Two to run fi
 contact from loop conformation) and **aRES D104A** (the reciprocal test, and the first functional
 test ever aimed at PF18870). → [status §4](docs/05_status_after_vault_integration.md).
 
-Longer lead time but the cleanest test of the central hypothesis: swap NTD-1 between aRES homologs
-with different phage ranges and ask whether specificity follows NTD-1 (P2,
-[hypothesis §5](docs/02_hypothesis_NTD1_sensor.md)). **Start that cloning in parallel, not after.**
+Longer lead time but the cleanest test of the central hypothesis: swap NTD-1 between **UC5 and
+GN04826**, which have near-identical phage ranges but differ by ~5 logs at T7 alone — so the other
+eight phages act as built-in folding controls in the same assay (P2,
+[matrix §1](docs/06_phage_range_matrix.md)). **Start that cloning in parallel, not after.**
 
 ## Status
 
@@ -59,11 +68,12 @@ with different phage ranges and ask whether specificity follows NTD-1 (P2,
 - [x] Computational plan drafted
 - [x] Interface-analysis tooling written and tested
 - [x] Prior work integrated (`notes/vault/`): domain boundaries, aRES×gp5 cofold, MD plan
-- [ ] **Confirm the Fig. 1B specificity claim** (does *E. chengduensis* aRES really not respond to T7?)
+- [x] Fig. 1B decoded — GN04826 confirmed **not** to defend against T7; chimera pair fixed
+- [ ] **λ P / O / Gam co-expression with UC5 aRES** — tests the non-polymerase trigger
+- [ ] **UC5 × GN04826 NTD-1 chimeras**, T7 readout (long lead time — start now)
+- [ ] gp5 S122A + aRES D104A through the 4G/4H assays
+- [ ] T2 vs T4 gp43 alignment — zero cost, natural specificity pair
 - [ ] Re-measure the three mutation panels with a consistent atom pair
-- [ ] gp5 variant panel (S122A, D106A/N, G121A) through the 4G/4H assays
-- [ ] aRES D104A/D104N — first functional test of PF18870
-- [ ] NTD-1 domain-swap chimeras (long lead time — start now)
 - [ ] Supplementary Tables S2/S3/S4 acquired → conservation analysis
 
 Nothing in this repo contains invented sequences, structures or results. Uncertain values are marked

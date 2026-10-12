@@ -272,9 +272,13 @@ Listed so they are on record before the data comes in.
 2. **Both domains contribute** — a composite interface spanning NTD-1 and RES. Quite likely, and
    would still support the spirit of H1. The isolated-domain docking runs distinguish this.
 3. **The escape mutations act on activation, not binding.** → Pull-down with gp5 S122P/D106G (§3).
-4. **aRES recognizes something else and gp5 is one of several triggers.** The T2/T4/T5 phenotype
-   (different aRES defend against phages with dissimilar polymerases) makes this a live
-   possibility. → §T5 of the plan.
+4. **aRES recognizes something else and gp5 is one of several triggers.** ✅ **This is now
+   established, not merely possible.** λ-vir encodes **no DNA polymerase at all**, yet UC5 and
+   GN04826 each give ~1,000-fold defense against it. So at least one aRES trigger is not a
+   polymerase, and "aRES senses the phage DNA polymerase" holds for T7 but is not the general rule.
+   → **`06_phage_range_matrix.md` §2**, which proposes that NTD-1 may instead sense phage proteins
+   that *hijack host replication factors* (T7 gp5 captures thioredoxin; λ P captures DnaB), and
+   gives the co-expression experiment that tests it.
 5. **Indirect recognition** via a host factor. Argued against by the DNA-free, two-component in
    vitro reconstitution **[FACT]**, but TrxA is a host factor and is present in the NEB enzyme —
    see §4. Not fully excluded.
