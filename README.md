@@ -23,6 +23,7 @@ mechanism open.
 | [`docs/04_data_inventory.md`](docs/04_data_inventory.md) | Every sequence/structure/supplement needed, with accessions and acquisition status |
 | [`docs/05_status_after_vault_integration.md`](docs/05_status_after_vault_integration.md) | Reconciles `01`–`04` with the prior work in `notes/vault/`: real domain boundaries, the cofold result, and what the earlier docs got wrong |
 | **[`docs/06_phage_range_matrix.md`](docs/06_phage_range_matrix.md)** | **Current state.** Fig. 1B decoded, the chimera pair fixed, and the λ problem that breaks the polymerase model. **Read this one first if you only read one.** |
+| [`docs/07_haddock_protocol.md`](docs/07_haddock_protocol.md) | What to run right now: the one-sided HADDOCK design, AF3 seed replicates, and the cheap checks worth doing while they run |
 
 `notes/vault/` is the Obsidian vault of prior work (notes + PyMOL/PAE figures), kept under version
 control as the project record.
@@ -108,14 +109,26 @@ numpy only, no Biopython needed.
 ```bash
 # Score a whole HADDOCK run against the hypothesis:
 python3 analysis/scripts/interface_contacts.py analysis/docking/blind_run/*.pdb \
-    --domain A:1-150:NTD1 --domain A:151-459:RES \
-    --roi B:102-122:insertion1 \
-    --tsv results/blind_contacts.tsv
+    --chains A B --domain B:1-120:NTD1 --domain B:126-447:RES \
+    --roi A:100-125:loop --tsv results/blind_contacts.tsv
 ```
 
-The `--roi` line prints what fraction of the gp5-side interface falls in insertion1 — i.e. whether
-the blind run independently supports P1. For AlphaFold models add `--min-plddt 70` to drop
-low-confidence residues.
+The domain breakdown says whether the aRES side of the interface is NTD-1 or RES; the `--roi` line
+says what fraction of the gp5 side falls in the epitope loop. For AlphaFold models add
+`--min-plddt 70` to drop low-confidence residues.
+
+[`analysis/scripts/make_haddock_restraints.py`](analysis/scripts/make_haddock_restraints.py) — builds
+HADDOCK AIR `.tbl` files, filtering the selection to solvent-exposed residues (Shrake-Rupley relative
+SASA vs Tien et al. maxima) so buried residues never end up restrained. Supports the one-sided design
+in [`docs/07`](docs/07_haddock_protocol.md), where only the experimentally-defined gp5 epitope is
+restrained and the aRES side is left free.
+
+```bash
+python3 analysis/scripts/make_haddock_restraints.py \
+    --mol-a gp5_unbound.pdb  --seg-a A --active-a 100-125 \
+    --mol-b ares_unbound.pdb --seg-b B --passive-b surface \
+    --out air_onesided.tbl
+```
 
 > Commit to scoring the blind run against P1 *before* looking at the output. A prediction registered
 > in advance is worth considerably more than the same observation made afterwards.
