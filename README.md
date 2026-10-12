@@ -23,6 +23,7 @@ mechanism open.
 | [`docs/04_data_inventory.md`](docs/04_data_inventory.md) | Every sequence/structure/supplement needed, with accessions and acquisition status |
 | [`docs/05_status_after_vault_integration.md`](docs/05_status_after_vault_integration.md) | Reconciles `01`–`04` with the prior work in `notes/vault/`: real domain boundaries, the cofold result, and what the earlier docs got wrong |
 | **[`docs/06_phage_range_matrix.md`](docs/06_phage_range_matrix.md)** | **Current state.** Fig. 1B decoded, the chimera pair fixed, and the λ problem that breaks the polymerase model. **Read this one first if you only read one.** |
+| [`docs/07_docking_run_review.md`](docs/07_docking_run_review.md) | The Zn(Cys)₄ ribbon found in aRES, review of the blind-run parameters, and where blind vs restrained docking each help |
 
 `notes/vault/` is the Obsidian vault of prior work (notes + PyMOL/PAE figures), kept under version
 control as the project record.
@@ -118,6 +119,16 @@ says what fraction of the gp5 side falls in the epitope loop. For AlphaFold mode
 
 > Commit to scoring the blind run against P1 *before* looking at the output. A prediction registered
 > in advance is worth considerably more than the same observation made afterwards.
+
+[`analysis/scripts/zn_site_check.py`](analysis/scripts/zn_site_check.py) — detects structural
+Zn(Cys)₄ sites in models that contain no metal, by testing the SG···SG geometry against the ideal
+tetrahedral edge (3.76 Å). Also reports mean pLDDT per region, which is how you decide whether a
+loop or tail is worth docking.
+
+```bash
+python3 analysis/scripts/zn_site_check.py ares_model.pdb \
+    --regions 1-48:Zn-ribbon 49-120:NTD1 448-459:tail
+```
 
 ## Note on `refs/`
 
