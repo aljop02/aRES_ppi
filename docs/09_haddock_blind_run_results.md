@@ -18,7 +18,7 @@ constitute one. §7 holds the pre-registered decision rule and why this is the o
 | **Did either run converge?** | **No.** ~94% of water-refined models are unclustered in both; the largest cluster is 3 models. |
 | **Is the top-scoring pose trustworthy?** | **No.** Its score is 63–70% electrostatics, and the Zn(Cys)₄ ribbon carries no zinc. |
 | **Is this evidence *against* the hypothesis?** | **No.** A non-converged ab-initio run is uninformative, not falsifying. See §7. |
-| **The restrained run** | **`2_ares_T7` has not been run** — neither upload contains it. §6. |
+| **The restrained run** | **`2_ares_T7` was missing, then ran and failed.** Job 780457 produced no complexes at all — the partners never touched. §6, §10. |
 
 The honest summary: these two runs do not discriminate between hypotheses. They should be reported
 as a non-converged ab-initio result and not interpreted pose-by-pose.
@@ -234,6 +234,9 @@ When it comes back, **check Eair first.** If the `air_boxplot.html` again says *
 calculated for this run"*, the restraints did not take effect and the run is another blind run
 regardless of what was submitted.
 
+> **Update, same day.** It was submitted as job **780457** and came back having never docked
+> anything. The Eair check above fired immediately and was the right diagnostic. See §10.
+
 ---
 
 ## 7. What these runs do and do not license
@@ -275,7 +278,9 @@ Asp104, 3.06 Å; `docs/05` §2) is independent of these runs and is not weakened
 1. **Download the two best-scoring models before they expire.** Both are unclustered singletons
    (779823 model 157, HS −165.03; 780456 model 108, HS −168.27) and are therefore **not** in the
    cluster-summary archives. HADDOCK deletes server results after two weeks.
-2. **Submit `2_ares_T7`** (§6). It is already parameterised. Verify Eair ≠ 0 when it returns.
+2. **Resubmit `2_ares_T7` with the explicit `ambig.tbl`** — the first attempt (job 780457) failed
+   with an empty restraint table and never docked anything (§10). Run the 100-structure test job
+   first and verify Eair ≠ 0 and BSA > 0 before committing the full sampling.
 3. **Model the Zn²⁺** into the Zn(Cys)₄ site, or exclude 1–48 from the interface, before any further
    blind docking. Until then, every blind result inherits the artifact in §4.
 4. **Dock gp5·TrxA** (T1.3 in `docs/03`): take 1T7P, strip the DNA, keep thioredoxin. The TBD hits
@@ -318,3 +323,94 @@ to 100%, and its absence is how the untrimmed run was spotted.
 Per-model energies and BSA come from the `REMARK energies` / `REMARK buried surface area` lines of
 the cluster PDBs; the plotted score/RMSD tables are embedded as Bokeh JSON in the `*.html` plot
 files.
+
+---
+
+## 10. Job 780457 (`2_ares_T7`) — the restrained run failed to dock anything
+
+Submitted after §6 was written, returned the same day. It is **not a docking result**: the two
+partners never came into contact, so nothing in it bears on aRES, gp5, or P1.
+
+### What came back
+
+| | |
+|---|---|
+| Structures analysed | 400 |
+| Clusters | **400, every one of size 1** |
+| Van der Waals energy | **exactly 0.0** |
+| Electrostatic energy | **exactly 0.0** |
+| Restraints violation energy (Eair) | **0.0** |
+| Buried surface area | **−999999** (HADDOCK's error sentinel) |
+| HADDOCK score | equals the desolvation energy exactly (−6.7 = −6.7, −5.9 = −5.9) |
+
+### The measurement that settles it
+
+Chain positions in the ten downloadable models:
+
+| model | COM chain A (aRES) | COM chain B (gp5) | separation |
+|---|---|---|---|
+| cluster391_1 | (−167.0, 0.2, −0.2) | (108.0, −0.3, 0.1) | 275.0 Å |
+| cluster393_1 | (164.6, −1.2, 0.1) | (−106.5, 0.7, 0.0) | 271.1 Å |
+| cluster399_1 | (−162.0, 2.1, −0.4) | (104.7, −1.4, 0.4) | 266.7 Å |
+| … all ten | | | **266–283 Å** |
+
+Both chains are present and complete (aRES 1–447, gp5 1–704). They sit on the x-axis with y,z ≈ 0 —
+**their untouched starting positions.** Only the sign of x varies, which is `rotate180_0: true`.
+Minimum inter-chain atom distance in cluster391_1 is **217 Å**.
+
+### Root cause: the AIR table was empty
+
+With `ranair: false`, `cmrest: false` and `surfrest: false`, the restraint energy is the *only* term
+that can bring two separated molecules together during it0 rigid-body minimisation. At 217 Å, vdW
+and electrostatics are far beyond their cutoffs, so there is not even a gradient pointing the right
+way. No restraints → no association → the molecules stay exactly where they were placed.
+
+The restraint **definition** in `job_params_restrained.json` is sound, which is what makes this
+worth recording rather than just rerunning:
+
+| check | result |
+|---|---|
+| gp5 active residues 103–118 present in the uploaded PDB | ✅ all 9 |
+| aRES passive residues present in the uploaded PDB | ✅ all 304 |
+| segid / chain consistency | ✅ `A`/`B` on both |
+| `inter_mat` | ✅ all 1.0 — the molecules are allowed to interact |
+| scoring weights | ✅ standard |
+| `tblfile` / `unambigtblfile` | **`None`** — no uploaded restraint file |
+| `partners.1.activereslist` | **`[]`** — zero active residues on aRES |
+
+So the server was asked to synthesise the AIRs from the active/passive lists and produced none.
+HADDOCK builds restraints *outward from active residues*; with zero on aRES, only gp5's 9 active
+residues should have generated any, and none appeared. The "Submit file → Full parameter file"
+route may also bypass the restraint builder altogether.
+
+**[INTERPRETATION]** The zero-active-residues configuration on partner 1 is the likely trigger. The
+one-sided design itself is standard and correct — active epitope on the known side, solvent-
+accessible surface as passive on the unknown side — it just cannot survive being handed to a
+generator that wants active residues on both partners.
+
+### Fix
+
+Restraints are now written explicitly rather than inferred, by
+[`analysis/scripts/make_ambig_tbl.py`](../analysis/scripts/make_ambig_tbl.py), and committed as
+[`analysis/docking/onesided_run/ambig.tbl`](../analysis/docking/onesided_run/ambig.tbl) — 9
+restraints, one per gp5 active residue, each targeting all 304 aRES surface residues:
+
+```bash
+python3 analysis/scripts/make_ambig_tbl.py \
+    --from-params analysis/docking/onesided_run/job_params_restrained.json \
+    --source-segid B -o analysis/docking/onesided_run/ambig.tbl
+```
+
+Pre-flight checks before the next submission are in
+[`onesided_run/README.md`](../analysis/docking/onesided_run/README.md): confirm the table is
+non-empty, verify segids survive upload, set `noecv: false` (50% random restraint removal is
+reckless with only 9 AIRs), and burn ten minutes on a 100-structure test job to prove `Eair ≠ 0`
+and `BSA > 0` before committing 5000 structures.
+
+### The transferable lesson
+
+`Eair = 0` is the diagnostic that separates **"docked badly"** from **"never docked"**, and it has
+now caught two different failures: random-AIR dropout in the blind runs (§4) and a missing restraint
+table here. Check it before reading anything else off a HADDOCK run. A results page full of
+plausible-looking cluster numbers is not evidence that docking occurred — these 400 clusters had
+Z-scores, RMSDs and rankings, and not one of them was a complex.

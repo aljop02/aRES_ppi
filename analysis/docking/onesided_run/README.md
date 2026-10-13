@@ -77,15 +77,49 @@ Unlike the blind run, this one localises the aRES side whatever the outcome.
 
 ---
 
-## ⚠️ Status: NOT YET SUBMITTED (as of 13-Oct-2026)
+## ⚠️ Outcome: job 780457 FAILED — the partners never touched
 
-The two runs that came back on 13-Oct-2026 are both **blind** runs (`aRES-T7` = job 779823 and
-`1_aRES_T7` = job 780456); see
-[`docs/09_haddock_blind_run_results.md`](../../../docs/09_haddock_blind_run_results.md) §6. Neither
-is `2_ares_T7`. Both carry `Eair = 0` in every model, which `ranair: false` with real AIRs would not.
+Submitted and returned 13-Oct-2026 as job **780457** (`2_ares_T7`). It did not produce a docking
+result at all. Full analysis in
+[`docs/09_haddock_blind_run_results.md`](../../../docs/09_haddock_blind_run_results.md) §10.
 
-So this run is still outstanding, and it is now the one that matters: the blind runs failed to
-converge, which is exactly the outcome `docs/07` §3 predicted and the reason this design exists.
+**In all 400 structures the two chains sit 266–283 Å apart**, on the x-axis at y,z ≈ 0 — their
+untouched starting positions. Every intermolecular term is exactly zero, buried surface area is the
+`-999999` error sentinel, and the 400 structures form 400 clusters of size 1.
 
-**When it returns, check `air_boxplot.html` first.** If it says *"No Eair was calculated for this
-run"*, the restraints did not take effect and it is another blind run whatever was submitted.
+**Root cause: the generated AIR table was empty.** With `ranair: false`, `cmrest: false` and
+`surfrest: false`, nothing else in HADDOCK's energy function pulls separated molecules together —
+at 217 Å, vdW and electrostatics are far past cutoff, so there is not even a gradient to follow.
+
+The restraint *definition* in `job_params_restrained.json` is valid: every restrained residue
+exists, segids and chain IDs are consistent, `inter_mat` is all 1.0. The failure is that the server
+never turned those lists into restraints. Prime suspect: **partner 1 has `activereslist = []`**.
+HADDOCK builds AIRs outward from active residues, so with none on aRES only gp5's 9 should have
+produced restraints — and none appeared. The "Submit file → Full parameter file" route may also skip
+the restraint builder entirely.
+
+### The fix — do not let the server infer the restraints
+
+[`ambig.tbl`](ambig.tbl) is now generated explicitly and committed:
+
+```bash
+python3 ../../scripts/make_ambig_tbl.py \
+    --from-params job_params_restrained.json --source-segid B -o ambig.tbl
+```
+
+9 restraints, one per gp5 active residue, each targeting all 304 aRES surface residues. Upload it as
+the **ambiguous restraints** file when resubmitting.
+
+### Before spending queue time again
+
+1. **Confirm `ambig.tbl` is non-empty** and that the server accepted it (9 `assign` blocks).
+2. **Check the segids.** The uploaded PDBs carry blank segid columns (73–76) and rely on the server
+   filling them from the chain ID. If that ever fails, `segid A` / `segid B` match nothing and you
+   get this exact failure again. Setting segids explicitly in the input PDBs removes the risk.
+3. **Set `noecv: false`.** With only 9 AIRs, the default 50% random removal for cross-validation
+   (`ncvpart: 2.0`) leaves very few restraints per trial.
+4. **Run a 100-structure test job first.** Ten minutes, and `Eair ≠ 0` plus `BSA > 0` in the output
+   proves the restraints are live before you commit 5000 structures to it.
+
+**The check that caught this:** `Eair = 0`. Keep using it. It is the single diagnostic that
+separates "docked badly" from "never docked".
