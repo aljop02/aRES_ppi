@@ -25,6 +25,7 @@ mechanism open.
 | **[`docs/06_phage_range_matrix.md`](docs/06_phage_range_matrix.md)** | **Current state.** Fig. 1B decoded, the chimera pair fixed, and the λ problem that breaks the polymerase model. **Read this one first if you only read one.** |
 | [`docs/07_docking_run_review.md`](docs/07_docking_run_review.md) | The Zn(Cys)₄ ribbon found in aRES, review of the blind-run parameters, and where blind vs restrained docking each help |
 | **[`docs/08_embl_hamburg_structural_plan.md`](docs/08_embl_hamburg_structural_plan.md)** | **The rotation plan for EMBL Hamburg.** Two tracks (first PF18870 structure / the interaction), the gate structure, week 1 in full, what was dropped and why, which negative results mean nothing, and the facility claims to verify on arrival |
+| **[`docs/09_haddock_blind_run_results.md`](docs/09_haddock_blind_run_results.md)** | **The two finished blind runs, scored against P1 as pre-registered.** Neither converged; P1 is not supported and not falsified; the score is an electrostatic artifact traceable to the unmodelled Zn site; and the restrained run `2_ares_T7` turns out never to have been submitted |
 
 `notes/vault/` is the Obsidian vault of prior work (notes + PyMOL/PAE figures), kept under version
 control as the project record.
@@ -71,6 +72,16 @@ eight phages act as built-in folding controls in the same assay (P2,
 - [x] Interface-analysis tooling written and tested
 - [x] Prior work integrated (`notes/vault/`): domain boundaries, aRES×gp5 cofold, MD plan
 - [x] Fig. 1B decoded — GN04826 confirmed **not** to defend against T7; chimera pair fixed
+- [x] **Blind HADDOCK runs 779823 + 780456 scored against P1** (`docs/09`) — neither converged
+      (~94% unclustered); P1 neither supported nor falsified; scoring dominated by an electrostatic
+      artifact from the unmodelled Zn(Cys)₄ site
+- [ ] **Download the two top-scoring models before the server expires them** — both are unclustered
+      singletons, so they are *not* in the cluster-summary archives (`docs/09` §8)
+- [ ] **Submit the one-sided restrained run `2_ares_T7`** — it was never actually run (`docs/09` §6);
+      parameters are ready. On return, check Eair ≠ 0 before anything else
+- [ ] **Re-dock with Zn²⁺ modelled** into the Zn(Cys)₄ ribbon, or exclude aRES 1–48
+- [ ] **Dock gp5·TrxA** (T1.3) — 1T7P with the DNA stripped; gp5-alone docking cannot read the TBD
+      diagnostic in `docs/02` §4
 - [ ] **Reconcile the UC5 frame** (model has Ile234/Ser293; paper says S234A/V293A) → then the UC5↔S_34AVR map
 - [ ] **λ P / O / Gam co-expression with UC5 aRES** — tests the non-polymerase trigger
 - [ ] **UC5 × GN04826 NTD-1 chimeras**, T7 readout (long lead time — start now)
@@ -110,9 +121,11 @@ numpy only, no Biopython needed.
 
 ```bash
 # Score a whole HADDOCK run against the hypothesis:
+# In the finished HADDOCK runs, chain A is aRES and chain B is gp5 (see docs/09).
 python3 analysis/scripts/interface_contacts.py analysis/docking/blind_run/*.pdb \
-    --chains A B --domain B:1-120:NTD1 --domain B:126-447:RES \
-    --roi A:100-125:loop --tsv results/blind_contacts.tsv
+    --chains A B \
+    --domain A:1-48:Zn_ribbon --domain A:49-120:NTD1 --domain A:126-447:RES \
+    --roi B:102-122:gp5_insertion1 --tsv results/blind_contacts.tsv
 ```
 
 The domain breakdown says whether the aRES side of the interface is NTD-1 or RES; the `--roi` line

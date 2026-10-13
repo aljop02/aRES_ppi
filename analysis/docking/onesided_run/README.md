@@ -74,3 +74,18 @@ python3 ../../scripts/interface_contacts.py <run>/structures/it1/water/*.pdb \
 | D104 is in the interface | aRES **D104** in the top contacts across clusters | absent from all clusters |
 
 Unlike the blind run, this one localises the aRES side whatever the outcome.
+
+---
+
+## ⚠️ Status: NOT YET SUBMITTED (as of 13-Oct-2026)
+
+The two runs that came back on 13-Oct-2026 are both **blind** runs (`aRES-T7` = job 779823 and
+`1_aRES_T7` = job 780456); see
+[`docs/09_haddock_blind_run_results.md`](../../../docs/09_haddock_blind_run_results.md) §6. Neither
+is `2_ares_T7`. Both carry `Eair = 0` in every model, which `ranair: false` with real AIRs would not.
+
+So this run is still outstanding, and it is now the one that matters: the blind runs failed to
+converge, which is exactly the outcome `docs/07` §3 predicted and the reason this design exists.
+
+**When it returns, check `air_boxplot.html` first.** If it says *"No Eair was calculated for this
+run"*, the restraints did not take effect and it is another blind run whatever was submitted.

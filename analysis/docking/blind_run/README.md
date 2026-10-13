@@ -52,3 +52,23 @@ python3 ../../scripts/interface_contacts.py <run>/structures/it1/water/*.pdb \
 Read every cluster, not just cluster 1. Pre-registered readout in
 `docs/07_docking_run_review.md` §3 — and a non-converging result is the expected outcome at
 this size and is **not** evidence against the hypothesis.
+
+---
+
+## Outcome
+
+Two blind runs finished on 13-Oct-2026 and are analysed in
+[`docs/09_haddock_blind_run_results.md`](../../../docs/09_haddock_blind_run_results.md).
+
+| job | server name | this parameter file | aRES construct | analysed |
+|---|---|---|---|---|
+| **779823** | `aRES-T7` | no — earlier v1 | 1–459, tail present | 200 |
+| **780456** | `1_aRES_T7` | **yes** (`job_params_blind_v2.json`) | 1–447, tail trimmed | 400 |
+
+**Neither converged** — ~94% of water-refined models unassigned to any cluster in both, largest
+cluster 3 models, best-scoring pose an unclustered singleton in each. Per the readout pre-registered
+in `docs/07` §3, the conclusion is **no conclusion**, which is the expected outcome at this size and
+is *not* evidence against the hypothesis.
+
+Also note: the score is 63–70% electrostatics in the top pose, and **no Zn²⁺ is present** in the
+Zn(Cys)₄ ribbon in either run. Fix that before spending more compute on blind docking.
