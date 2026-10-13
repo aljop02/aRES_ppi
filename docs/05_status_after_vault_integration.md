@@ -100,6 +100,13 @@ Please confirm it against Fig. 1B at full resolution before building on it. Flag
 
 ## 2. The two mutations are one mechanism, not two hypotheses
 
+> **⚠️ Caveat added later, and it applies to this whole section.** Everything below is derived from
+> the geometry of a **single AlphaFold3 cofold at poor ipTM**. It is one observation in one seed,
+> not a working model, and no construct or mutant should be built on it. What survives independently
+> is only that the gp5 **100–125 loop** is the epitope — which rests on escape-mutant genetics, not
+> on any prediction. The specific residue pair, and the scaffold/contact division of labour between
+> D106 and S122, stand or fall with the cofold. See `docs/08` §"D104 is NOT load-bearing".
+
 Your MD plan frames H1 (loop conformation) and H2 (direct contact) as alternatives. Looking at the
 three panels together, I think they are **sequential steps of a single mechanism**, and that the
 data already point that way:

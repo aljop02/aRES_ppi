@@ -4,7 +4,9 @@
 > was available. It is still correct in its logic, but two things are now better established and
 > one framing here is superseded — see **`05_status_after_vault_integration.md`**:
 > - The existing aRES×gp5 cofold already places gp5 **Ser122** in H-bond contact with aRES
->   **Asp104**, which lies inside the N-terminal block → P1 and H1 are supported.
+>   **Asp104**, which lies inside the N-terminal block. **But treat this weakly**: it is one seed at
+>   poor ipTM. H1 is supported by domain architecture and the escape-mutant genetics, *not* by this
+>   contact. See `docs/08` §"D104 is NOT load-bearing".
 > - **PDB 1T7P lacks residues 118–123**, so the epitope loop is not in any experimental structure.
 >   The "well-defined helix-loop-helix" framing in §3 below overstates what is known.
 > - Real domain boundaries: N-block **1–120**, hinge 120–125, RES side **126–447**
