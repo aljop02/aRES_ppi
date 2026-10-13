@@ -186,16 +186,23 @@ Three things are wrong here at once:
    below 1200 Å². HADDOCK reports BSA summed over both partners, so 892 Å² is ~450 Å² per side —
    crystal-contact territory. An average specific PPI buries roughly 1500–2000 Å² total.
 3. **The Zn(Cys)₄ ribbon has no metal.** No `HETATM` record appears in any model. `docs/07` found
-   C8/C11/C31/C34 in near-ideal tetrahedral geometry; without Zn²⁺ that site is four uncoordinated
-   thiolates plus a +2 charge hole, which is exactly what an electrostatics-driven search will home
-   in on.
+   C8/C11/C31/C34 in near-ideal tetrahedral geometry, and the metal is simply absent, leaving four
+   uncoordinated sulfurs in a 3.67 Å cluster for flexible refinement to pull apart.
 
-**[INTERPRETATION]** gp5 is a DNA polymerase, so it carries a strongly basic DNA-binding cleft; aRES
-presents acidic patches and an unneutralised Zn site. Blind docking with no restraints, no counter-
-ions and no metal will preferentially pair those, which accounts for both the huge Eelec values and
-the absence of a funnel. The concrete test: overlay the top poses on the DNA path in **1T7P** and
-check whether the aRES contact footprint on gp5 coincides with the nucleic-acid groove. If it does,
-these poses are charge artifacts and nothing more.
+> ⚠️ **Correction (added with `docs/10`).** An earlier version of point 3 said the apo site carries
+> "a +2 charge hole". That is wrong. HADDOCK's default cysteine is **neutral** (protonated SH), so
+> the metal-free site in these runs is net **neutral** — there is no charge hole for electrostatics
+> to home in on. Modelling the site properly (Zn²⁺ + four CYF thiolates) gives net **−2**, i.e. it
+> makes the region *more* negative, not less. Adding the zinc is therefore **not** a fix for the
+> electrostatic artifact; it buys physical realism during refinement and removes the `docs/07`
+> caveat that contacts on 1–48 must be discounted. See `docs/10` §1.
+
+**[INTERPRETATION]** gp5 is a DNA polymerase, so it carries a strongly basic DNA-binding cleft, and
+aRES presents acidic patches across its surface. Blind docking with no restraints and no counter-ions
+will preferentially pair those, which accounts for both the huge Eelec values and the absence of a
+funnel. The concrete test: overlay the top poses on the DNA path in **1T7P** and check whether the
+aRES contact footprint on gp5 coincides with the nucleic-acid groove. If it does, these poses are
+charge artifacts and nothing more.
 
 ---
 

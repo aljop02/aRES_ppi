@@ -10,6 +10,10 @@ data/structures/*.mmcif
 
 # Docking and prediction output (keep the summaries in results/, not the raw runs)
 analysis/docking/**/*.pdb
+# ...but prepared docking INPUTS are kept: they are small, they are what was actually
+# submitted, and regenerating them depends on a server parameter file that expires.
+# Convention: prepared inputs carry _seg<ID> in the filename.
+!analysis/docking/**/*_seg[A-Z].pdb
 analysis/afold/**/*.cif
 analysis/afold/**/*.pdb
 analysis/afold/**/*.zip

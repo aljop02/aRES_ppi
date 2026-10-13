@@ -118,8 +118,14 @@ the **ambiguous restraints** file when resubmitting.
    get this exact failure again. Setting segids explicitly in the input PDBs removes the risk.
 3. **Set `noecv: false`.** With only 9 AIRs, the default 50% random removal for cross-validation
    (`ncvpart: 2.0`) leaves very few restraints per trial.
-4. **Run a 100-structure test job first.** Ten minutes, and `Eair ≠ 0` plus `BSA > 0` in the output
-   proves the restraints are live before you commit 5000 structures to it.
+4. **Run a 100-structure test job first.** Ten minutes, and it proves the restraints are live before
+   you commit 5000 structures. Check **buried surface area > 0** and **Evdw < 0** — see below.
 
-**The check that caught this:** `Eair = 0`. Keep using it. It is the single diagnostic that
-separates "docked badly" from "never docked".
+**The check that caught this:** `Eair = 0`. But use it correctly. On *separated* partners, `Eair = 0`
+proves no restraints existed. On a run that worked, the AIRs are satisfied and `Eair` is legitimately
+small or zero — so it is **buried surface area** (`-999999` vs a positive number) and **Evdw** that
+tell you whether docking happened at all. Check BSA first, then Eair.
+
+**Superseded by [`docs/10_haddock_run_protocol.md`](../../../docs/10_haddock_run_protocol.md)** —
+the full step-by-step for the resubmission, with Zn²⁺ modelled. The prepared submission package is
+in [`../onesided_run_v2/`](../onesided_run_v2/).
