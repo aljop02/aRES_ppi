@@ -19,12 +19,16 @@ From your InterPro/PAE analysis (`notes/vault/Central question...md`,
 | Source | Boundaries |
 |---|---|
 | InterPro **PF18870** | **49–136** |
-| InterPro **PF00808** RES | **199–363** |
+| InterPro **PF08808** RES | **199–363** |
 | MobiDB disordered | 438–459 |
 | **AF3 PAE structural module** | **N-term block 1–120** · hinge 120–125 · RES-side block 126–447 |
 
-> Minor correction: the RES Pfam is **PF00808**, not PF08808 — the note and the PAE figure label
-> both carry the typo. Worth fixing before it propagates into a methods section.
+> **Correction (and it reverses what this document first said).** The RES Pfam accession is
+> **PF08808**, which is what your note and your PAE figure already had. The paper is internally
+> inconsistent: Fig. 1B labels the domain `PF08808 RES`, while the STAR Methods text repeatedly
+> writes `PF00808` — a histone-like family, not RES. An HMM search built on the Methods number
+> returns the wrong family and would silently corrupt the homolog set for `docs/03` T4. See
+> `docs/08` §"Two corrections".
 
 **The important point: the structural module (1–120) and the Pfam annotation (49–136) disagree at
 both ends.** Residues 1–48 belong structurally to the N-terminal block but fall outside PF18870,

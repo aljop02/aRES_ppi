@@ -24,6 +24,7 @@ mechanism open.
 | [`docs/05_status_after_vault_integration.md`](docs/05_status_after_vault_integration.md) | Reconciles `01`–`04` with the prior work in `notes/vault/`: real domain boundaries, the cofold result, and what the earlier docs got wrong |
 | **[`docs/06_phage_range_matrix.md`](docs/06_phage_range_matrix.md)** | **Current state.** Fig. 1B decoded, the chimera pair fixed, and the λ problem that breaks the polymerase model. **Read this one first if you only read one.** |
 | [`docs/07_docking_run_review.md`](docs/07_docking_run_review.md) | The Zn(Cys)₄ ribbon found in aRES, review of the blind-run parameters, and where blind vs restrained docking each help |
+| **[`docs/08_embl_hamburg_structural_plan.md`](docs/08_embl_hamburg_structural_plan.md)** | **The rotation plan for EMBL Hamburg.** Two tracks (first PF18870 structure / the interaction), the gate structure, week 1 in full, what was dropped and why, which negative results mean nothing, and the facility claims to verify on arrival |
 
 `notes/vault/` is the Obsidian vault of prior work (notes + PyMOL/PAE figures), kept under version
 control as the project record.
@@ -70,6 +71,7 @@ eight phages act as built-in folding controls in the same assay (P2,
 - [x] Interface-analysis tooling written and tested
 - [x] Prior work integrated (`notes/vault/`): domain boundaries, aRES×gp5 cofold, MD plan
 - [x] Fig. 1B decoded — GN04826 confirmed **not** to defend against T7; chimera pair fixed
+- [ ] **Reconcile the UC5 frame** (model has Ile234/Ser293; paper says S234A/V293A) → then the UC5↔S_34AVR map
 - [ ] **λ P / O / Gam co-expression with UC5 aRES** — tests the non-polymerase trigger
 - [ ] **UC5 × GN04826 NTD-1 chimeras**, T7 readout (long lead time — start now)
 - [ ] gp5 S122A + aRES D104A through the 4G/4H assays

@@ -42,7 +42,7 @@ the structural block (1–120) and the Pfam call (49–136):
 ```
 1 ────────── 48 │ 49 ─────────── 120 │ 121-125 │ 126 ──────────── 447 │ 448-459
    Zn ribbon    │   PF18870 (NTD-1)  │  hinge  │   RES side block     │  tail
-   C8 C11 C31 C34                                PF00808: 199-363
+   C8 C11 C31 C34                                PF08808: 199-363
 └──── structural N-block 1-120 (AF3 PAE) ────┘
 ```
 
