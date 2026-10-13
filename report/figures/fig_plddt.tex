@@ -1,0 +1,39 @@
+% fig_plddt.tex -- per-residue confidence trace of the aRES monomer model.
+% Data: plddt.dat, generated from the B-factor column of aRES_Zn_segA.pdb
+% (per-residue mean). That column is a pLDDT-like confidence field, verified
+% against the per-region means recorded in docs/07: HIGH = confident.
+\begin{tikzpicture}
+\begin{axis}[
+    width=0.95\textwidth, height=5.2cm,
+    xlabel={residue}, ylabel={pLDDT},
+    xmin=1, xmax=447, ymin=20, ymax=100,
+    xtick={1,50,100,150,200,250,300,350,400,447},
+    ytick={20,40,60,80,100},
+    tick label style={font=\footnotesize},
+    label style={font=\small},
+    axis line style={black!70},
+    grid=major, grid style={black!12, line width=0.3pt},
+    clip mode=individual,
+]
+
+  % confidence bands
+  \addplot[draw=none, fill=green!12, forget plot]
+    coordinates {(1,70) (447,70) (447,100) (1,100)} \closedcycle;
+  \addplot[draw=none, fill=red!10, forget plot]
+    coordinates {(1,20) (447,20) (447,50) (1,50)} \closedcycle;
+
+  % the two low-confidence regions called out in docs/07
+  \addplot[draw=none, fill=red!28, forget plot]
+    coordinates {(121,20) (125,20) (125,100) (121,100)} \closedcycle;
+  \addplot[draw=none, fill=orange!22, forget plot]
+    coordinates {(392,20) (408,20) (408,100) (392,100)} \closedcycle;
+
+  \addplot[black!80, line width=0.6pt] table[x=resi, y=plddt] {figures/plddt.dat};
+
+  \node[font=\scriptsize, anchor=south, text=red!65!black, align=center]
+    at (axis cs:123,100) {hinge};
+  \node[font=\scriptsize, anchor=south, text=orange!65!black, align=center]
+    at (axis cs:400,100) {loop};
+
+\end{axis}
+\end{tikzpicture}
