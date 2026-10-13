@@ -1,0 +1,145 @@
+% aRES N-block charge architecture -- short findings note.
+% Build:  latexmk -pdf charge_architecture.tex
+
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=2.4cm]{geometry}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage[colorlinks=true,linkcolor=blue,urlcolor=blue]{hyperref}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt}
+
+\title{\vspace{-1.3cm}\textbf{A bipolar charge architecture in the aRES N-terminal block}}
+\author{\normalsize Rotation project \texttt{aRES\_ppi}}
+\date{\normalsize\today}
+
+\begin{document}
+\maketitle
+\vspace{-0.7cm}
+
+Sequence composition and AlphaFold3 model analysis only --- no experimental data.
+\emph{E.~coli} UC5 aRES, 459 aa.
+
+\section*{1. The N-terminal block is two modules of opposite charge}
+
+Per-region charge composition, counting Lys$+$Arg against Asp$+$Glu:
+
+\begin{center}
+\begin{tabular}{lrrrrrr}
+\toprule
+Region & Length & K & R & D & E & Net (per 100 aa) \\
+\midrule
+Zn ribbon 1--48      &  48 & 10 &  3 &  2 &  0 & $+11$ \ \ ($+22.9$) \\
+NTD-1 49--120        &  72 &  0 &  3 & 11 &  8 & $-16$ \ \ ($-22.2$) \\
+N-block 1--120       & 120 & 10 &  6 & 13 &  8 & $-5$ \ \ ($-4.2$) \\
+RES side 126--447    & 322 & 23 & 19 & 24 & 21 & $-3$ \ \ ($-0.9$) \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Two directly adjacent modules carry almost exactly equal and opposite charge density. The zinc
+ribbon has ten lysines and \emph{no glutamate}; NTD-1 has nineteen acidic residues and \emph{no
+lysine at all}. The RES domain next door is at $-0.9$ per 100 residues, i.e.\ an ordinary protein
+surface --- so the extremity is confined to the N-block and is anticorrelated between its halves.
+
+Residues 31--40 are \texttt{CSYC\,KRKRK\,N}: a five-residue basic run immediately C-terminal to the
+second CxxC motif. That is the canonical arrangement of a nucleic-acid-binding zinc ribbon, and it
+is a stronger signal than the net charge.
+
+\section*{2. Both charged faces are solvent-exposed}
+
+In the electrostatic surface of the monomer model, the basic ribbon face (carrying the zinc) and the
+acidic NTD-1 face sit on adjacent lobes and each faces solvent. They do not neutralise one another
+in an intramolecular clamp. The N-block therefore presents a \textbf{bipolar surface}: one strongly
+basic face and one strongly acidic face, both available for binding.
+
+\section*{3. Working model --- hypothesis, not a result}
+
+The N-block may recognise \textbf{a polymerase engaged with nucleic acid}, with the two modules
+reading the two components:
+
+\begin{itemize}[leftmargin=1.4em,itemsep=2pt]
+  \item the \textbf{basic zinc ribbon} binds the DNA;
+  \item the \textbf{acidic NTD-1} binds the polymerase's basic nucleic-acid-binding cleft, acting as
+        a DNA mimic (the logic of Ocr, T7's own gene 0.3 product, which mimics B-form DNA to inhibit
+        host EcoKI; protein mimics of DNA are acidic).
+\end{itemize}
+
+What recommends it:
+
+\begin{itemize}[leftmargin=1.4em,itemsep=2pt]
+  \item \textbf{Promiscuity.} Every polymerase has a basic DNA-binding cleft regardless of sequence
+        family. aRES must fire on T7 gp5, on divergent T-even and T5 polymerases, and on something in
+        $\lambda$. Recognising a conserved \emph{physical} feature does not require a conserved epitope.
+  \item \textbf{Specificity.} Requiring both faces to engage is an AND-gate --- which is what the
+        system needs, since the host cytoplasm is full of polymerases and a false positive is suicide.
+  \item \textbf{Why the sensor is bimodular at all}, which neither a folding-scaffold nor an
+        effector role for the ribbon explains.
+  \item \textbf{$\lambda$.} Host Pol III hijacked at ori$\lambda$ by P/O is still a polymerase on DNA
+        in an aberrant context, consistent with the host-factor-hijacking model.
+  \item \textbf{It survives the DNA-free reconstitution.} Purified gp5$\cdot$TrxA activates aRES with
+        no DNA and no dNTPs. If NTD-1 is the DNA mimic it engages the cleft without DNA present; the
+        ribbon's DNA arm would contribute avidity and context-specificity \emph{in vivo}. A sufficient
+        minimal reaction and the full mechanism need not be the same thing.
+\end{itemize}
+
+\section*{4. Tests, cheapest first}
+
+\begin{enumerate}[leftmargin=1.6em,itemsep=2pt]
+  \item \textbf{Artifact control on the electrostatics.} Recompute with the Zn deleted, and colour the
+        surface by residue type as a model-free check
+        (\texttt{analysis/scripts/color\_by\_restype.pml}). The blue is currently centred on the metal,
+        and if the four Cys were not treated as thiolates the site is over-positive by up to $+6$.
+  \item \textbf{Back face and contiguity.} If the two patches form one contiguous bipolar surface, the
+        two-sided model is viable; if they point away from each other they cannot engage one target at
+        once and the model needs rethinking.
+  \item \textbf{Is D104 on the acidic face?} The existing cofold places aRES D104 against gp5 S122. If
+        D104 sits in the exposed acidic patch, the model connects to the one interface result in hand,
+        and the D104A/D104N experiment tests the model rather than a single weak contact.
+  \item \textbf{AF3 cofold of aRES with a primer--template duplex.} Direct test: does DNA dock onto the
+        KRKRK face? One server job.
+  \item \textbf{DNA binding, 1--120 vs 49--136.} EMSA or fluorescence anisotropy against ssDNA, dsDNA
+        and a primer--template fork. 49--136 contains no ribbon and no zinc, so it is the built-in
+        negative control and is already in the construct series.
+  \item \textbf{DNA competition of the aRES--gp5 interaction.} If NTD-1 occupies the DNA cleft, adding
+        primer--template should compete aRES off gp5. Sharpest available test of the mimicry half.
+  \item \textbf{Salt dependence of $K_d$.} An electrostatically driven interface is strongly
+        ionic-strength sensitive; a conventional epitope interface much less so.
+  \item \textbf{Conservation.} Compute the same per-module charge split across PF18870 homologs. If
+        ribbon-containing homologs consistently show the mirror, it is functional architecture rather
+        than an accident of one sequence.
+\end{enumerate}
+
+\section*{5. Caveats}
+
+\begin{itemize}[leftmargin=1.4em,itemsep=2pt]
+  \item This is compositional reasoning over a single predicted model. It generates a hypothesis; it
+        does not confirm one.
+  \item The electrostatic rendering may overstate the basic patch at the zinc (test 1).
+  \item The surface was inspected in one orientation (test 2).
+  \item gp5 D106 is itself acidic, which is awkward for a naively electrostatic interface. Local
+        context will matter more than net charge.
+  \item The DNA-free \emph{in vitro} activation bounds any model in which nucleic acid is the trigger
+        for T7. It does not exclude a contribution to affinity or to other triggers.
+\end{itemize}
+
+\section*{6. Figures to make}
+
+\begin{enumerate}[leftmargin=1.6em,itemsep=2pt]
+  \item \textbf{\texttt{figs/restype\_front.png}, \texttt{figs/restype\_back.png}} --- surface coloured
+        by residue type, front and back of the N-block. Script:
+        \texttt{analysis/scripts/color\_by\_restype.pml}.
+  \item \textbf{\texttt{figs/apbs\_nozn.png}} --- the existing electrostatic surface recomputed with the
+        Zn removed, same orientation and same $\pm 5\,k_{\mathrm{B}}T/e$ scale, beside the original.
+  \item \textbf{\texttt{figs/charge\_window.png}} --- net charge in a 15-residue sliding window along
+        residues 1--459, with the module boundaries marked. Shows the anticorrelation at 48 as one line.
+  \item \textbf{\texttt{figs/nblock\_cartoon.png}} --- cartoon of 1--120 with the ribbon, NTD-1 and the
+        zinc coloured, oriented to match figure 1.
+\end{enumerate}
+
+\end{document}
