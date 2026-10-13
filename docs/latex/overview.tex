@@ -1,0 +1,282 @@
+% aRES_ppi — project overview, with the open items marked as fill-in gaps.
+% Build:  latexmk -pdf overview.tex     (or Ctrl+Alt+B in VS Code / LaTeX Workshop)
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=2.4cm]{geometry}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{enumitem}
+\usepackage[colorlinks=true,linkcolor=linknavy,urlcolor=linknavy,citecolor=linknavy]{hyperref}
+
+\definecolor{linknavy}{HTML}{1F4E79}
+\definecolor{gapbg}{HTML}{FFF8E1}
+\definecolor{gaprule}{HTML}{C8A415}
+\definecolor{soft}{HTML}{6B6B6B}
+
+% ---------------------------------------------------------------------------
+% Gap machinery: \gap{short label}{what is needed, and where it comes from}
+% Each gap is numbered, boxed with ruled lines to write on, and listed in the
+% gap register at the front of the document.
+% ---------------------------------------------------------------------------
+\newcounter{gapctr}
+\renewcommand{\thegapctr}{G\arabic{gapctr}}
+
+\makeatletter
+\newcommand*{\l@gapline}{\@dottedtocline{1}{1.5em}{3.2em}}
+\newcommand{\listofgaps}{\subsection*{Gap register}\@starttoc{gaps}}
+\makeatother
+
+\newcommand{\fillline}{\par\vspace{2pt}\textcolor{gaprule}{\rule{\linewidth}{0.4pt}}\par}
+
+\newcommand{\gap}[2]{%
+  \refstepcounter{gapctr}%
+  \addcontentsline{gaps}{gapline}{\protect\numberline{\thegapctr}#1}%
+  \par\vspace{4pt}%
+  \noindent\begin{minipage}{\linewidth}%
+    \setlength{\fboxsep}{7pt}%
+    \fcolorbox{gaprule}{gapbg}{%
+      \begin{minipage}{\dimexpr\linewidth-2\fboxsep-2\fboxrule\relax}
+        \textbf{\thegapctr{} — #1}\\[1pt]
+        {\small\textcolor{soft}{#2}}
+        \fillline
+        \vspace{10pt}
+      \end{minipage}}%
+  \end{minipage}\par\vspace{6pt}%
+}
+
+% A short inline blank to write a single value into.
+\newcommand{\val}[1][2cm]{\textcolor{gaprule}{\rule[-2pt]{#1}{0.4pt}}}
+
+\newcommand{\prov}[1]{{\small\textcolor{soft}{#1}}}
+
+\title{\textbf{aRES\_ppi — project overview}\\[2pt]
+       \large How does aRES recognise phage proteins, and what activates its NADase?}
+\author{Rotation project}
+\date{Compiled \today}
+
+\begin{document}
+\maketitle
+
+\noindent
+This document is the single-page-in, many-pages-out view of the project: what is established, what
+rests on a prediction, and what is simply missing. The missing parts are numbered
+\textbf{\textcolor{gaprule}{G1--\ref{lastgap}}} and collected in the register below --- write into
+the boxes and the register updates on the next build.
+
+\medskip
+\noindent
+Source material is the markdown in \texttt{docs/01}--\texttt{docs/08} and the Obsidian vault in
+\texttt{notes/vault/}; this file does not replace them, it marks where they stop.
+
+\vspace{6pt}
+\hrule
+\listofgaps
+\hrule
+
+% ===========================================================================
+\section{The question, and the claim}
+
+\textbf{The system.} aRES is an anti-phage defence protein: an N-terminal domain of unknown
+function (\texttt{PF18870}, ``HEPN/RES N-terminal domain 1'', NTD-1) fused to a C-terminal RES
+NADase (\texttt{PF08808}). Osterman et al.\ 2026 (\textit{Cell Host \& Microbe} 34:991--999)
+establish that aRES is activated by direct binding to T7 DNA polymerase (gp5), and explicitly leave
+the recognition mechanism open.
+
+\textbf{The claim this project tests.} NTD-1 is a \emph{modular phage-protein sensor}: it binds the
+trigger protein and thereby activates the RES NADase. The modular version matters more than the
+minimal one --- it predicts that swapping NTD-1 between aRES homologues swaps the phage range.
+
+\textbf{Why NTD-1 and not something else.} There is no experimental structure of any PF18870 domain
+anywhere. That is simultaneously the project's risk and its cheapest novelty.
+
+% ===========================================================================
+\section{What is established, by provenance}
+
+The single most useful column here is the last one. Phage genetics survives whatever happens to the
+models; the models do not survive contact with the genetics.
+
+\begin{longtable}{@{}p{0.52\linewidth}p{0.18\linewidth}p{0.24\linewidth}@{}}
+\toprule
+\textbf{Statement} & \textbf{Strength} & \textbf{Where it comes from}\\
+\midrule
+\endhead
+aRES is activated by direct binding to T7 gp5 & Established & Paper, Fig.~4\\
+gp5 \textbf{S122P} and \textbf{D106G} each escape \emph{both} the UC5 and S\_34AVR aRES &
+  Established & Phage genetics --- two independent isolates; the hardest evidence in the project\\
+The gp5 epitope is therefore the $\sim$100--125 loop & Strong & Follows from the genetics alone,
+  not from any model\\
+T7 gp5 is a heterodimer with host thioredoxin; the activating species in vitro was the
+  \textbf{gp5$\cdot$TrxA holoenzyme} (NEB M0274S) & Established & Paper's methods --- so docking gp5
+  alone may be docking the wrong species\\
+$\lambda$-vir has no DNA polymerase, yet aRES defends against it & Established & $\lambda$ replicates
+  with host Pol III; its only replication proteins are O and P\\
+Therefore \textbf{at least one aRES trigger is not a polymerase} & Strong & Direct consequence of the
+  row above --- the paper's framing holds for T7, not as a general rule\\
+aRES carries six Cys in residues 1--120 (C8, C11, C31, C34, \textbf{C78, C96}) & Verified &
+  Re-checked against the repository's own coordinates\\
+No lysine anywhere in aRES 49--120 & Verified & Same --- all ten N-block lysines sit in the Zn ribbon.
+  This constrains amine-reactive crosslinking directly\\
+gp5 Ser122 OG hydrogen-bonds aRES Asp104 (3.06\,\AA) & \textbf{Weak} & One AlphaFold3 cofold, one
+  seed, poor ipTM. \emph{Not} load-bearing --- see \S\ref{sec:predictions}\\
+aRES is a monomer, and the complex is 1:1 & \textbf{Assumed} & Never measured. The only solved
+  RES-NADase structure (6GW6) is built on a RES toxin \emph{dimer}\\
+\bottomrule
+\end{longtable}
+
+% ===========================================================================
+\section{The five predictions the project rests on}\label{sec:predictions}
+
+Each of these is currently a prediction, and each has a cheap experiment that kills it.
+\textbf{P1 and P5 are free and belong in week 1} --- they are the two cheapest ways to find out that
+a downstream month was going to be wasted.
+
+\paragraph{P1 --- the AlphaFold3 cofold interface is real.}
+Current evidence: one cofold, one pose. The killing experiment is an interface-confidence audit:
+ipTM, interface PAE, and the per-seed frequency of the D104--S122 contact. If it appears in 1 of 5
+seeds, stop before ordering a primer.
+
+\gap{P1 interface-confidence audit}{Fill in from the cofold outputs: ipTM = \val{1.6cm}, mean
+interface PAE = \val{1.6cm}\,\AA, D104--S122 contact present in \val{0.8cm} of \val{0.8cm} seeds.
+Blocked only by G\ref{gapcofold} (the model files are not in the repo). This is free and gates
+everything downstream of the cofold.}
+
+\paragraph{P2 --- the gp5 100--125 loop contacts the aRES N-block.}
+Note the restatement: the earlier form, ``Ser122 contacts Asp104'', overstates one low-ipTM seed.
+Killed by zero-length XL-MS (gp5 K103/K114/K118 to an aRES acidic residue in 49--120), and by the
+\textbf{gp5($\Delta$118--123)$\cdot$TrxA} activation test --- a published, catalytically competent
+deletion (1T7P/1TK0) that removes G121/S122 outright. If $\Delta$118--123 still activates aRES,
+S122 is not the contact.
+
+\gap{Does gp5($\Delta$118--123) still activate aRES?}{One clone, one activation assay --- and it
+decides whether the entire S122 story survives. Result: \val{3cm}. This is the highest
+information-per-effort experiment in the project.}
+
+\paragraph{P3 --- NTD-1 is the sensor module.}
+Evidence is the domain architecture plus the authors' own statement; notably \emph{not} the cofold.
+Killed by asking whether the isolated N-block binds gp5$\cdot$TrxA at all (MST / nanoDSF), and
+whether excess N-block \emph{competes in trans} against gp5-driven activation of full-length aRES.
+
+\paragraph{P4 --- aRES carries a structural Zn(Cys)$_4$ site.}
+Evidence so far is AlphaFold SG--SG geometry only (3.55--3.81\,\AA{} against an ideal 3.76; no metal
+in the model). Killed or confirmed by ICP-MS stoichiometry, native ESI-MS ($+63.4$\,Da), and Zn
+K-edge XANES.
+
+\gap{Zn stoichiometry}{Zn per aRES monomer by ICP-MS/OES: \val{1.5cm}. Native ESI-MS mass shift:
+\val{1.5cm}\,Da. Coordination number and ligand type (S vs N/O) from XANES: \val{3cm}.}
+
+\paragraph{P5 --- aRES is a monomer and the complex is 1:1.}
+Assumed throughout, measured never. One SEC-MALS or AUC run settles it. If aRES dimerises, apo aRES
+is $\sim$100\,kDa --- unresolvable from 92\,kDa gp5$\cdot$TrxA by mass photometry --- and every mass,
+mask volume and particle count in the cryo-EM plan is wrong.
+
+\gap{Oligomeric state of apo aRES}{SEC-MALS or AUC, one run, before any stoichiometry is quoted
+anywhere: measured mass = \val{1.8cm}\,kDa, so aRES is a \val{2.2cm}.}
+
+% ===========================================================================
+\section{Numbers that do not exist yet}
+
+Every entry below is currently blank in the project, and each one changes a downstream decision
+rather than merely adding detail.
+
+\gap{The dissociation constant}{$K_d$ for aRES $\leftrightarrow$ gp5$\cdot$TrxA = \val{2cm}.
+Nobody has measured it. Every technique in the interaction track has a concentration window, so
+this number decides which methods are even applicable --- and a $K_d$ above $\sim$50\,\textmu M
+takes the interaction track off the table.}
+
+\gap{Does the isolated N-block express solubly, fold, and load zinc?}{Yes / no, plus yield per litre:
+\val{2cm}. This single answer gates the whole domain track --- the first experimental structure of
+any PF18870 domain.}
+
+\gap{Does recombinant gp5$\cdot$TrxA exist at $\geq$0.5\,mg by week 6?}{Yes / no:
+\val{1.2cm}. Gates the whole interaction track. The commercial NEB enzyme cannot supply this ---
+it has to be co-expressed.}
+
+\medskip
+\noindent
+\textbf{The scheduling consequence.} The N-block expression screen and the gp5$\cdot$TrxA
+co-expression must start in the \emph{same} week, in parallel. The fallback is directional: if the
+interaction work collapses, the domain track continues untouched, but if the N-block is insoluble
+the domain track dies while the interaction track continues on full-length aRES. Serialising the two
+is the single most likely way this ends with protein in a freezer and no data.
+
+% ===========================================================================
+\section{Open contradictions}
+
+These are not missing measurements --- they are places where two sources disagree, and each one sits
+upstream of something expensive.
+
+\paragraph{The $\lambda$ problem.} $\lambda$-vir encodes no DNA polymerase, yet two of the three
+aRES proteins defend against it. So the polymerase model is incomplete. The candidate resolution is
+that NTD-1 senses phage proteins that \emph{hijack host replication factors}: T7 gp5 captures
+thioredoxin, $\lambda$ P captures DnaB. One co-expression screen tests it.
+
+\gap{Which $\lambda$ protein triggers aRES?}{Co-express $\lambda$ P (then O, then Gam) with UC5 aRES
+in the Fig.~4G format, S\_34AVR as the negative control. Trigger identified: \val{2.5cm}. A positive
+result here reframes the project from ``polymerase sensor'' to ``replication-hijack sensor''.}
+
+\paragraph{The 234/293 mismatch.} The model has \textbf{Ile234} and \textbf{Ser293}; the paper's
+defence-null list says \textbf{S234A} and \textbf{V293A}. The pattern --- a Ser at 293 and a branched
+aliphatic at 234 --- is what a transposed pair of residue numbers looks like. Four of six positions
+verify, so this is localised rather than a frame error, but it is upstream of every mutant in the
+plan.
+
+\gap{Resolve 234/293 against the primary sequence record}{Is it a transposition in the paper
+(i.e.\ S293A and V234A), or a different UC5 isolate? Answer: \val{3cm}. Resolve before ordering
+anything.}
+
+\paragraph{The RES Pfam accession.} The paper is internally inconsistent: Fig.~1B labels the domain
+\texttt{PF08808 RES} while the STAR Methods text says otherwise. An HMM search built on the wrong
+accession returns a histone-like family and would silently corrupt the homolog collection for the
+conservation analysis.
+
+\gap{Confirm the RES accession on InterPro}{Accession in use: \val{2cm}. Confirm before building
+the HMM --- the failure mode here is silent, not loud.}
+
+% ===========================================================================
+\section{Data and files still missing}
+
+\gap{The cofold model files}{\label{gapcofold}The vault has figures but no \texttt{.cif}/\texttt{.pdb}.
+With the coordinates in \texttt{data/structures/}, \texttt{analysis/scripts/interface\_contacts.py}
+gives the full interface contact list, the NTD-1 vs RES breakdown, and the seed-to-seed
+reproducibility of the S122--D104 contact in one command --- which is exactly G1. Status:
+\val{2cm}.}
+
+\gap{Supplementary Tables S2/S3/S4 and Fig.~1B at full resolution}{Needed for the homolog set and to
+finish decoding the phage-range matrix. Status: \val{2cm}.}
+
+\gap{The blind HADDOCK run output}{In \texttt{analysis/docking/blind\_run/}. Needed to compare blind
+against the one-sided restrained run, where both escape residues turned out to be buried. Status:
+\val{2cm}.}
+\label{lastgap}
+
+% ===========================================================================
+\section{What the gaps decide}
+
+\begin{longtable}{@{}p{0.30\linewidth}p{0.62\linewidth}@{}}
+\toprule
+\textbf{Gap} & \textbf{What it unblocks or kills}\\
+\midrule
+\endhead
+G1, G\ref{gapcofold} & Whether the cofold interface deserves any further resource at all\\
+G2 & Whether S122 is the contact --- one clone decides it\\
+G3, G6 & The domain track: Zn validation and the first PF18870 structure\\
+G4 & Which biophysical technique is applicable; whether the interaction track is viable\\
+G5 & Every mass, mask volume and particle count quoted downstream\\
+G8 & Whether the project is about polymerases or about replication hijack\\
+G9, G10 & Whether the mutants and the homolog set are built on correct identifiers\\
+\bottomrule
+\end{longtable}
+
+\medskip
+\noindent
+\textbf{Realistic outcome.} A rotation cannot deliver a structure of the 143\,kDa
+aRES$\cdot$gp5$\cdot$TrxA complex. It can plausibly deliver one of two publishable things --- the
+first experimental structure of a PF18870 domain ($\sim$30--35\%), or a measured $K_d$ with a
+residue-level interface restraint set ($\sim$40--45\%) --- with roughly a 60\% chance of at least
+one. The plan keeps both live until a decision point kills one.
+
+\end{document}
