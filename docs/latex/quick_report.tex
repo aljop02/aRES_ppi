@@ -1,9 +1,5 @@
 % aRES quick report -- one-page poster-style summary.
 % Build:  latexmk -pdf quick_report.tex
-%
-% Three figures are placeholders. Export each from PyMOL into figs/ under the
-% name shown in its box, then replace the whole \figbox{...}{...}{...} call with
-%     \includegraphics[width=\linewidth]{figs/<name>.png}
 
 \documentclass[10pt,a4paper]{article}
 
@@ -26,20 +22,9 @@
 \newcommand{\colhead}[1]{\par{\Large #1}\par\vspace{2pt}}
 \newcommand{\divider}{\par\vspace{4pt}\noindent\rule{\linewidth}{1.1pt}\par\vspace{2pt}}
 
-% Placeholder for a render that does not exist yet.
-% #1 = height, #2 = target filename in figs/, #3 = what to render
-\newcommand{\figbox}[3]{%
-  \setlength{\fboxsep}{6pt}%
-  \fbox{\begin{minipage}[c][#1][c]{\dimexpr\linewidth-2\fboxsep-2\fboxrule\relax}
-    \centering\footnotesize\color{soft}%
-    \texttt{\detokenize{figs/#2}}\par\vspace{4pt}#3\par
-  \end{minipage}}}
-
 \begin{document}
 
 {\Huge Quick Report: initial findings on aRES}\par\vspace{1pt}
-{\small\textcolor{soft}{\emph{E.~coli} UC5 aRES, 459 aa. Sequence composition and AlphaFold3 model
-analysis only. No experimental data. \today}}
 
 \vspace{5pt}
 
@@ -80,6 +65,13 @@ Residues 31--40 are \texttt{CSYC \textbf{KRKRK} N}, a basic run directly after t
 % ===================== ROW 2 =====================
 \panelhead{Two N-terminal domains}
 
+Through InterPro, there seems to be a functionally uncharacterised N-terminal domain (NTD-1) often
+occurring in front of HEPN and RES domains. The sequence also shows a (Cys)$_4$ pattern consistent
+with a zinc ribbon: in the AlphaFold model (aRES cofold with Zn) the four cysteines sit in a tetrahedral arrangement at a
+mean pLDDT of 90.8, and a zinc ion is coordinated at 2.24--2.25\,\AA.
+
+\vspace{4pt}
+
 \begin{minipage}[t]{0.47\linewidth}
 \vspace{0pt}
 \colhead{1.\ NTD-1}
@@ -91,7 +83,7 @@ Residues 31--40 are \texttt{CSYC \textbf{KRKRK} N}, a basic run directly after t
 \toprule
 Domain & Range & Note \\
 \midrule
-PF18870 & 49--136 & no experimental structure exists \\
+PF18870 & 49--136 & found in other phage defense proteins but is functionally uncharacterised \\
 PF08808 RES & 199--363 & the NADase \\
 \bottomrule
 \end{tabular}}
@@ -130,16 +122,14 @@ Control (T7 gp5) & 10 Cys, \textbf{no cluster}; closest 7.85\,\AA\\
 solvent. They do not neutralise one another.
 
 \vspace{4pt}
-\textbf{Working model (hypothesis).} The N-block recognises a polymerase engaged with nucleic acid:}
+\textbf{Hypothesis.} The N-block recognises a polymerase engaged with nucleic acid:}
 
 {\small
 \begin{itemize}[leftmargin=1.2em,itemsep=2pt,topsep=3pt]
-  \item the basic zinc ribbon binds the DNA;
-  \item the acidic NTD-1 binds the polymerase's basic cleft as a DNA mimic (cf.\ Ocr, T7 gene 0.3).
+  \item the basic zinc ribbon could bind the DNA;
+  \item the acidic NTD-1 could bind the polymerase's basic cleft as a DNA mimic.
 \end{itemize}}
 
-{\small Consistent with recognition of unrelated polymerases, with $\lambda$ (no phage polymerase),
-and with the DNA-free \emph{in vitro} activation.}
 \end{minipage}
 \hfill
 \begin{minipage}[t]{0.53\linewidth}
@@ -148,12 +138,5 @@ and with the DNA-free \emph{in vitro} activation.}
 \vspace{2pt}
 {\footnotesize Electrostatic surface, $\pm 5\,k_{\mathrm{B}}T/e$.}
 \end{minipage}
-
-\vspace{4pt}
-{\footnotesize\textcolor{soft}{\textbf{Caveats.} Composition and one predicted model. The rendering
-may overstate the basic patch at the zinc if the four Cys were not treated as thiolates. One
-orientation. gp5 D106 is itself acidic.
-\textbf{Next:} residue-type surface and Zn-deleted control; is D104 on the acidic face; AF3 cofold
-with a primer--template duplex; EMSA 1--120 vs 49--136; DNA competition of the aRES--gp5 pull-down.}}
 
 \end{document}
