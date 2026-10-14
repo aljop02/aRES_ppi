@@ -6,6 +6,10 @@ AlphaFold models carry no metals, but they place the coordinating side chains in
 metal-binding geometry anyway. A tight cluster of four cysteine sulfurs is therefore
 good evidence for a structural zinc site even with nothing modelled in the pocket.
 
+If the model *does* contain a Zn -- an AF3 job with the ion supplied as a ligand --
+use af3_zn_site.py instead, which measures the coordination shell directly rather
+than inferring it. The two agree on aRES (docs/10 section 1).
+
 The test is quantitative, not a guess. In an ideal tetrahedral Zn(Cys)4 site with a
 Zn-S bond of 2.3 A, the S...S edge is
 

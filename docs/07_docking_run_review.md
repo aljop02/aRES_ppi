@@ -73,6 +73,12 @@ Reproduce with:
 python3 analysis/scripts/zn_site_check.py <ares_model.pdb>
 ```
 
+> **Confirmed with the metal present.** Three orthologs were later cofolded with Zn, and the ion
+> goes to C8/C11/C31/C34 in **15/15 models** with mean Zn–SG 2.22–2.28 Å against a 2.30 Å
+> reference — including in two orthologs, so the site is a family feature and not a UC5 quirk.
+> The inference above, made from SG···SG geometry in a metal-free model, was right.
+> → [`docs/10` §1](10_ortholog_zn_cofolds.md).
+
 ---
 
 ## 2. Review of `job_params.json`

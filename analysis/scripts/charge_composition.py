@@ -13,6 +13,12 @@ out to carry almost exactly equal and opposite charge density:
     NTD-1 49-120      net -16   (-22.2 per 100)   nineteen acidic, no Lys
     RES side 126-447  net  -3   ( -0.9 per 100)   an ordinary protein surface
 
+Those numbers are UC5's, and only half of the pattern generalises. Across two
+orthologs (docs/10 section 3) the acidic NTD-1 is a family feature -- zero Lys and
+exactly eleven Asp in all three, at 34-69% sequence identity -- while the ribbon's
++11 falls to +3 and +2. So the equal-and-opposite *split* above is a UC5
+peculiarity. Do not quote the dipole as a property of the family.
+
 Histidine is reported but never counted into the net, because its charge at
 physiological pH depends on local environment rather than on composition.
 
