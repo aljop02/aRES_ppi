@@ -3,8 +3,8 @@
 homolog_compare.py -- map residue numbering and superpose across aRES orthologs.
 
 The problem this solves: every residue number in this project (C8/C11/C31/C34,
-E89, E93, D104) is in the *UC5* frame, and orthologs have different lengths --
-Klebsiella aRES is 443 aa against UC5's 459. Quoting "D104" for a Klebsiella model
+D90, E89, E93) is in the *UC5* frame, and orthologs have different lengths --
+Klebsiella aRES is 443 aa against UC5's 459. Quoting "E93" for a Klebsiella model
 is meaningless until the frames are aligned, and eyeballing an alignment is how
 frame errors get into documents (see docs/06 on the UC5/S_34AVR mix-up).
 
@@ -16,12 +16,30 @@ the reference and each ortholog, then
   * CA superposition (Kabsch) over a chosen reference region, using only
     alignment-equivalent pairs, with RMSD
 
-Sequences are read from the structures themselves, not from a separate FASTA, so
-the alignment and the coordinates cannot drift apart.
+Inputs are structures (.cif/.pdb) or FASTA (.fasta/.fa/.faa), mixed freely, and the
+first entry is the reference frame. A structure's sequence is read from its own
+coordinates, so the alignment and the coordinates cannot drift apart. A FASTA file
+may hold many records, which is how a whole ortholog panel is passed in one
+argument -- those entries have no coordinates, so the superposition and pLDDT
+columns skip them.
 
 Caveat on the RMSD: it is computed over aligned pairs after a least-squares fit, so
 it answers "is this the same fold in the same conformation" and nothing more. A low
 RMSD over a region says the models agree there; it does not make either one right.
+
+Caveat on the identity: --identity-tsv reports it two ways. `id_aligned` divides by
+the aligned columns only, so a deletion inside a region does not count against that
+region; `id_allpos` divides by every reference position in the region, so it does.
+They differ exactly where indels fall, and docs/10 section 2 found the N-block's
+indels concentrated in NTD-1 -- so `id_aligned` is the conservative choice when the
+question is whether NTD-1 diverges fastest. Both columns are written; say which one
+a number came from.
+
+Statistics: the per-ortholog two-proportion z-test at the end of this script treats
+alignment positions as independent and orthologs as independent of each other.
+Neither holds. For a panel, run ortholog_panel_stats.py on the --identity-tsv
+output -- it tests at the ortholog level, corrects for the phylogeny, and corrects
+for the several region pairs being compared.
 
 Dependencies: numpy.
 
@@ -30,8 +48,12 @@ Usage
   python3 homolog_compare.py ref.cif other1.cif other2.cif \
       --names UC5 E.chengduensis Klebsiella \
       --regions 1-48:Zn-ribbon 49-120:NTD1 126-447:RES \
-      --map 8 11 31 34 89 93 104 \
+      --map 8 11 31 34 89 90 93 \
       --super 1-120
+
+  python3 homolog_compare.py data/sequences/ares_uc5.fasta panel.fasta \
+      --regions 1-48:Zn-ribbon 49-120:NTD1 126-447:RES \
+      --identity-tsv results/panel_region_identity.tsv
 """
 
 from __future__ import annotations
@@ -86,11 +108,20 @@ GAP_OPEN = -11
 GAP_EXTEND = -1
 
 
-def score(a: str, b: str) -> int:
-    ia, ib = IDX.get(a), IDX.get(b)
-    if ia is None or ib is None:
-        return -1
-    return int(BLOSUM62[ia, ib])
+# BLOSUM62 widened by one row and column for "anything not one of the twenty",
+# which scores -1 against everything including itself. Encoding the sequences
+# against this lets a whole alignment row be scored in one array lookup.
+_UNK = len(AA)
+EXT62 = np.full((_UNK + 1, _UNK + 1), -1, dtype=np.int64)
+EXT62[:_UNK, :_UNK] = BLOSUM62
+_CODE = np.full(128, _UNK, dtype=np.int64)
+for _i, _c in enumerate(AA):
+    _CODE[ord(_c)] = _i
+
+
+def encode(s: str) -> np.ndarray:
+    """Sequence -> residue indices into EXT62."""
+    return _CODE[np.frombuffer(s.encode("ascii", "replace"), dtype=np.uint8)]
 
 
 # ------------------------------------------------------------------ alignment
@@ -100,9 +131,23 @@ def align(s1: str, s2: str):
     """Needleman-Wunsch with affine gaps (Gotoh). -> list of (i, j) 0-based pairs.
 
     Gaps are represented by None on one side.
+
+    Filled a row at a time rather than a cell at a time, which matters once a
+    panel is being aligned instead of two orthologs: 18 sequences against the
+    reference plus the all-against-all matrix the phylogenetic correction needs is
+    ~170 alignments, and the cell-at-a-time version took about a second each.
+
+    M and X at row i depend only on row i-1, so they vectorise directly. Y depends
+    on its own row -- Y[i,j] = max(M[i,j-1]+open, Y[i,j-1]+extend) -- which is a
+    scan, but subtracting the per-column extension cost turns it into a cumulative
+    maximum. Tie-breaking is kept identical to the cell-at-a-time recurrences
+    (prefer the match state, then prefer opening a gap over extending one), so the
+    traceback below is unchanged and the output is the same alignment, not merely
+    an equally-scoring one.
     """
     n, m = len(s1), len(s2)
     NEG = -10**9
+    e1, e2 = encode(s1), encode(s2)
     # M: match state, X: gap in s2 (consume s1), Y: gap in s1 (consume s2)
     M = np.full((n + 1, m + 1), NEG, dtype=np.int64)
     X = np.full((n + 1, m + 1), NEG, dtype=np.int64)
@@ -112,32 +157,39 @@ def align(s1: str, s2: str):
     pY = np.zeros((n + 1, m + 1), dtype=np.int8)
 
     M[0, 0] = 0
+    rows = np.arange(1, n + 1)
+    cols = np.arange(1, m + 1)
+    X[1:, 0] = GAP_OPEN + (rows - 1) * GAP_EXTEND
+    pX[1:, 0] = 1
+    Y[0, 1:] = GAP_OPEN + (cols - 1) * GAP_EXTEND
+    pY[0, 1:] = 2
+
+    jv = np.arange(m + 1, dtype=np.int64)
     for i in range(1, n + 1):
+        srow = EXT62[e1[i - 1], e2]
+
+        cand = np.stack((M[i - 1, :-1], X[i - 1, :-1], Y[i - 1, :-1]))
+        k = cand.argmax(0)
+        M[i, 1:] = cand[k, np.arange(m)] + srow
+        pM[i, 1:] = k
+
+        c_open = M[i - 1, :] + GAP_OPEN
+        c_ext = X[i - 1, :] + GAP_EXTEND
+        opened = c_open >= c_ext
+        X[i, :] = np.where(opened, c_open, c_ext)
+        pX[i, :] = np.where(opened, 0, 1)
         X[i, 0] = GAP_OPEN + (i - 1) * GAP_EXTEND
         pX[i, 0] = 1
-    for j in range(1, m + 1):
-        Y[0, j] = GAP_OPEN + (j - 1) * GAP_EXTEND
-        pY[0, j] = 2
 
-    for i in range(1, n + 1):
-        a = s1[i - 1]
-        srow = np.array([score(a, b) for b in s2], dtype=np.int64)
-        for j in range(1, m + 1):
-            s = srow[j - 1]
-            cand = (M[i - 1, j - 1], X[i - 1, j - 1], Y[i - 1, j - 1])
-            k = int(np.argmax(cand))
-            M[i, j] = cand[k] + s
-            pM[i, j] = k
-
-            cand = (M[i - 1, j] + GAP_OPEN, X[i - 1, j] + GAP_EXTEND)
-            k = int(np.argmax(cand))
-            X[i, j] = cand[k]
-            pX[i, j] = 0 if k == 0 else 1
-
-            cand = (M[i, j - 1] + GAP_OPEN, Y[i, j - 1] + GAP_EXTEND)
-            k = int(np.argmax(cand))
-            Y[i, j] = cand[k]
-            pY[i, j] = 0 if k == 0 else 2
+        # enter[j] is the score of starting the Y run at column j; removing the
+        # j * extend term makes a running maximum give every Y[i, j] at once.
+        enter = np.empty(m + 1, dtype=np.int64)
+        enter[0] = Y[i, 0]
+        enter[1:] = M[i, :-1] + GAP_OPEN
+        shifted = enter - jv * GAP_EXTEND
+        run = np.maximum.accumulate(shifted)
+        Y[i, :] = run + jv * GAP_EXTEND
+        pY[i, 1:] = np.where(shifted[1:] >= run[:-1], 0, 2)
 
     i, j = n, m
     state = int(np.argmax((M[n, m], X[n, m], Y[n, m])))
@@ -192,6 +244,61 @@ def read_chain(path: str):
     return seq, nums, ca, pl
 
 
+FASTA_EXT = {".fasta", ".fa", ".faa", ".fas", ".seq"}
+
+
+def read_fasta_records(path: str):
+    """-> [(name, seq), ...]. The name is the first whitespace-delimited token of
+    the header, so '>A0A2M9WDD2 Pantoea rodasii | ...' is called A0A2M9WDD2."""
+    recs, name, buf = [], None, []
+    with open(path, errors="replace") as fh:
+        for line in fh:
+            line = line.strip()
+            if line.startswith(">"):
+                if name is not None:
+                    recs.append((name, "".join(buf)))
+                name, buf = (line[1:].split() or ["unnamed"])[0], []
+            elif line:
+                buf.append(line.upper())
+    if name is not None:
+        recs.append((name, "".join(buf)))
+    if not recs:
+        raise SystemExit(f"{path}: no FASTA records")
+    return recs
+
+
+def load_inputs(paths, names):
+    """-> [(name, seq, resnums, ca, plddt_by_resnum), ...], reference first.
+
+    One path can contribute several entries, because a FASTA file may hold a whole
+    ortholog panel. FASTA entries get consecutive numbering from 1 and no
+    coordinates, so a NaN CA array stands in -- the superposition sections drop
+    NaN pairs already, which makes them skip FASTA entries without a special case.
+    """
+    entries = []
+    for p in paths:
+        if os.path.splitext(p)[1].lower() in FASTA_EXT:
+            for rec_name, seq in read_fasta_records(p):
+                entries.append((rec_name, seq, list(range(1, len(seq) + 1)),
+                                np.full((len(seq), 3), np.nan), {}))
+        else:
+            seq, nums, ca, pl = read_chain(p)
+            entries.append((os.path.basename(p), seq, nums, ca, pl))
+    # --names overrides in order, and may cover only the first few entries.
+    out = [((names[k] if k < len(names) else e[0]),) + e[1:]
+           for k, e in enumerate(entries)]
+    # Everything downstream is keyed by name, so a duplicate would silently drop
+    # an ortholog from the panel and from the statistics.
+    seen = {}
+    for nm, *_ in out:
+        seen[nm] = seen.get(nm, 0) + 1
+    dup = sorted(nm for nm, c in seen.items() if c > 1)
+    if dup:
+        raise SystemExit(f"duplicate input names: {', '.join(dup)} -- "
+                         f"FASTA headers must be unique in their first token")
+    return out
+
+
 def kabsch_rmsd(P: np.ndarray, Q: np.ndarray) -> float:
     """RMSD after optimal superposition of P onto Q."""
     Pc, Qc = P - P.mean(0), Q - Q.mean(0)
@@ -214,7 +321,9 @@ def parse_regions(specs):
 
 def main() -> None:
     ap = argparse.ArgumentParser(description="Compare aRES orthologs by sequence and structure.")
-    ap.add_argument("structures", nargs="+", help="first is the reference frame")
+    ap.add_argument("inputs", nargs="+", metavar="INPUT",
+                    help="structures (.cif/.pdb) and/or FASTA (.fasta/.fa/.faa, "
+                         "may be multi-record); the first entry is the reference frame")
     ap.add_argument("--names", nargs="*", default=[])
     ap.add_argument("--regions", nargs="*", default=[], metavar="LO-HI:NAME")
     ap.add_argument("--map", nargs="*", type=int, default=[], metavar="RESNUM",
@@ -228,19 +337,28 @@ def main() -> None:
                     help="regions to list fully invariant positions for")
     ap.add_argument("--min-indel", type=int, default=2,
                     help="shortest indel run to report (default 2)")
+    ap.add_argument("--identity-tsv", metavar="PATH",
+                    help="write per-ortholog per-region identity counts here, for "
+                         "ortholog_panel_stats.py")
+    ap.add_argument("--map-tsv", metavar="PATH",
+                    help="write the --map table here as well; the printed version is "
+                         "unreadable past a handful of orthologs")
     args = ap.parse_args()
 
-    names = list(args.names) + [
-        os.path.basename(p) for p in args.structures[len(args.names):]
-    ]
-    chains = [read_chain(p) for p in args.structures]
+    entries = load_inputs(args.inputs, list(args.names))
+    names = [e[0] for e in entries]
+    chains = [e[1:] for e in entries]
     ref_name, (ref_seq, ref_nums, ref_ca, ref_pl) = names[0], chains[0]
 
     print("=" * 78)
     print(f"reference frame: {ref_name}  ({len(ref_seq)} aa)")
     print("=" * 78)
-    for nm, (seq, _, _, _) in zip(names, chains):
-        print(f"  {nm:<20} {len(seq)} aa")
+    if len(entries) <= 12:
+        for nm, (seq, _, _, _) in zip(names, chains):
+            print(f"  {nm:<20} {len(seq)} aa")
+    else:
+        lens = [len(e[1]) for e in entries[1:]]
+        print(f"  {len(entries) - 1} orthologs, {min(lens)}-{max(lens)} aa")
 
     regions = parse_regions(args.regions)
     super_regions = parse_regions(args.super)
@@ -272,8 +390,76 @@ def main() -> None:
             line += f"{ident(lo, hi):>13.1f}%"
         print(line)
 
+    # ---- per-region counts for the panel statistics
+    # Counts, not just percentages, because the panel test needs to know how many
+    # positions each number rests on -- a 48-residue region and a 322-residue one
+    # carry very different sampling noise and the write-up has to say so.
+    if args.identity_tsv:
+        rows = []
+        for nm, (pairs, seq, nums, ca, pl) in alignments.items():
+            eq = [(i, j) for i, j in pairs if i is not None and j is not None]
+            for lab, lo, hi in [("overall", None, None)] + list(regions):
+                in_region = [
+                    (i, j) for i, j in eq
+                    if lo is None or lo <= ref_nums[i] <= hi
+                ]
+                n_al = len(in_region)
+                n_id = sum(1 for i, j in in_region if ref_seq[i] == seq[j])
+                n_ref = (len(ref_seq) if lo is None
+                         else sum(1 for rn in ref_nums if lo <= rn <= hi))
+                rows.append(dict(
+                    ortholog=nm, region=lab,
+                    lo=("" if lo is None else lo), hi=("" if hi is None else hi),
+                    n_ref=n_ref, n_aligned=n_al, n_identical=n_id,
+                    n_gap=n_ref - n_al,
+                    id_aligned=(100.0 * n_id / n_al) if n_al else float("nan"),
+                    id_allpos=(100.0 * n_id / n_ref) if n_ref else float("nan"),
+                ))
+        cols = ["ortholog", "region", "lo", "hi", "n_ref", "n_aligned",
+                "n_identical", "n_gap", "id_aligned", "id_allpos"]
+        d = os.path.dirname(os.path.abspath(args.identity_tsv))
+        os.makedirs(d, exist_ok=True)
+        with open(args.identity_tsv, "w", newline="") as fh:
+            fh.write("\t".join(cols) + "\n")
+            for r in rows:
+                fh.write("\t".join(
+                    f"{r[c]:.4f}" if isinstance(r[c], float) else str(r[c])
+                    for c in cols) + "\n")
+        print(f"\nper-region identity counts written to {args.identity_tsv} "
+              f"({len(rows)} rows)")
+
+    # ---- map positions of interest, machine-readable
+    if args.map and args.map_tsv:
+        rows = []
+        for nm, (pairs, seq, nums, ca, pl) in alignments.items():
+            eq = {i: j for i, j in pairs if i is not None and j is not None}
+            for rn in args.map:
+                try:
+                    i = ref_nums.index(rn)
+                except ValueError:
+                    continue
+                j = eq.get(i)
+                rows.append(dict(
+                    ortholog=nm, ref_resnum=rn, ref_aa=ref_seq[i],
+                    aa=("-" if j is None else seq[j]),
+                    resnum=("" if j is None else nums[j]),
+                    identical=("" if j is None else int(seq[j] == ref_seq[i])),
+                    plddt=("" if j is None or nums[j] not in pl
+                           else f"{pl[nums[j]]:.1f}"),
+                ))
+        cols = ["ortholog", "ref_resnum", "ref_aa", "aa", "resnum", "identical",
+                "plddt"]
+        os.makedirs(os.path.dirname(os.path.abspath(args.map_tsv)), exist_ok=True)
+        with open(args.map_tsv, "w", newline="") as fh:
+            fh.write("\t".join(cols) + "\n")
+            for r in rows:
+                fh.write("\t".join(str(r[c]) for c in cols) + "\n")
+        print(f"\nmapped positions written to {args.map_tsv} ({len(rows)} rows)")
+
     # ---- map positions of interest
-    if args.map:
+    # Printed unless a panel is being mapped and the TSV already has it, since the
+    # printed table is one column per ortholog and stops being readable past a few.
+    if args.map and (len(alignments) <= 8 or not args.map_tsv):
         print(f"\nreference positions mapped onto each ortholog")
         print(f"  {'ref':<10}" + "".join(f"{nm:>22}" for nm in list(alignments)))
         for rn in args.map:
@@ -289,7 +475,8 @@ def main() -> None:
                     cells.append("-- gap --")
                 else:
                     same = "=" if seq[j] == ref_seq[i] else " "
-                    cells.append(f"{seq[j]}{nums[j]}{same} pLDDT {pl.get(nums[j], float('nan')):.0f}")
+                    conf = f" pLDDT {pl[nums[j]]:.0f}" if nums[j] in pl else ""
+                    cells.append(f"{seq[j]}{nums[j]}{same}{conf}")
             print(f"  {ref_seq[i]}{rn:<9}" + "".join(f"{c:>22}" for c in cells))
         print("  ('=' marks an identical residue; pLDDT is the ortholog's own)")
 
@@ -350,9 +537,19 @@ def main() -> None:
 
     # ---- superposition
     targets = super_regions or []
+    # A FASTA entry has no coordinates, so the two structural sections have nothing
+    # to say about it. Both loops below skip such entries rather than printing a
+    # column of "--" for every member of a panel.
+    with_coords = {nm: v for nm, v in alignments.items()
+                   if not np.isnan(v[3]).all()}
+    if np.isnan(ref_ca).all():
+        with_coords = {}
+    skipped = len(alignments) - len(with_coords)
     print(f"\nCA RMSD to {ref_name} after Kabsch superposition (aligned pairs only)")
+    if skipped:
+        print(f"  ({skipped} sequence-only input(s) skipped: no coordinates)")
     print(f"  {'ortholog':<20}{'region':<16}{'n_pairs':>9}{'RMSD':>9}")
-    for nm, (pairs, seq, nums, ca, pl) in alignments.items():
+    for nm, (pairs, seq, nums, ca, pl) in with_coords.items():
         specs = [("whole chain", None, None)] + targets
         for lab, lo, hi in specs:
             P, Q = [], []
@@ -378,10 +575,10 @@ def main() -> None:
     # fit on domain A, then report domain B's RMSD in A's frame. A large number
     # means a different hinge angle, which is a structural claim worth making
     # separately from "the fold is conserved".
-    if len(targets) >= 2:
+    if len(targets) >= 2 and with_coords:
         print(f"\ninter-domain arrangement: fit on one region, measure another in that frame")
         print(f"  {'ortholog':<18}{'fit on':<14}{'measured':<14}{'n':>5}{'RMSD':>9}")
-        for nm, (pairs, seq, nums, ca, pl) in alignments.items():
+        for nm, (pairs, seq, nums, ca, pl) in with_coords.items():
             eq = [(i, j) for i, j in pairs if i is not None and j is not None]
             for fit_lab, fit_lo, fit_hi in targets:
                 sel_fit = [(i, j) for i, j in eq if fit_lo <= ref_nums[i] <= fit_hi]

@@ -26,7 +26,8 @@ mechanism open.
 | [`docs/07_docking_run_review.md`](docs/07_docking_run_review.md) | The Zn(Cys)₄ ribbon found in aRES, review of the blind-run parameters, and where blind vs restrained docking each help |
 | **[`docs/08_embl_hamburg_structural_plan.md`](docs/08_embl_hamburg_structural_plan.md)** | **The rotation plan for EMBL Hamburg.** Two tracks (first PF18870 structure / the interaction), the gate structure, week 1 in full, what was dropped and why, which negative results mean nothing, and the facility claims to verify on arrival |
 | **[`docs/09_blind_zn_run_results.md`](docs/09_blind_zn_run_results.md)** | **The blind docking run with Zn modelled, scored against the pre-registered readout.** It did not converge — but the gp5 epitope came out blind, and one clean cluster puts acidic NTD-1 on the basic loop and yields a new two-mutant experiment |
-| **[`docs/10_ortholog_zn_cofolds.md`](docs/10_ortholog_zn_cofolds.md)** | **Three aRES orthologs cofolded with Zn.** The Zn(Cys)₄ ribbon is confirmed with the metal present and conserved in all three. NTD-1 keeps its charge but is the fastest-diverging module; the charge *split* turns out to be UC5-only, and an apparent domain rearrangement is withdrawn as a PAE artifact |
+| **[`docs/10_ortholog_zn_cofolds.md`](docs/10_ortholog_zn_cofolds.md)** | **Three aRES orthologs cofolded with Zn.** The Zn(Cys)₄ ribbon is confirmed with the metal present and conserved in all three. NTD-1 keeps its charge but is the fastest-diverging module; the charge *split* turns out to be UC5-only, and an apparent domain rearrangement is withdrawn as a PAE artifact. ⚠️ §2's divergence claim is superseded by `docs/11` |
+| **[`docs/11_ortholog_panel_divergence.md`](docs/11_ortholog_panel_divergence.md)** | **Eighteen orthologs through the per-region identity test, phylogenetically corrected.** Scored against `docs/10` §8's registered outcomes: the third matched. **The Zn ribbon diverges as fast as NTD-1, so the N-block is one evolutionary unit** — what is significant is the N-block against the RES core. The charge result is the strong one: NTD-1 is net-acidic in 187/190 orthologs and never positive. Also: the Zn shell is Cys₃His in 21% of the family, and PF18870's own boundaries contradict the repo's `49–136` |
 
 `notes/vault/` is the Obsidian vault of prior work (notes + PyMOL/PAE figures), kept under version
 control as the project record.
@@ -84,12 +85,16 @@ eight phages act as built-in folding controls in the same assay (P2,
 - [x] Prior work integrated (`notes/vault/`): domain boundaries, aRES×gp5 cofold, MD plan
 - [x] Fig. 1B decoded — GN04826 confirmed **not** to defend against T7; chimera pair fixed
 - [x] Blind docking run with Zn modelled (job 780832) — scored against the pre-registered readout in [`docs/09`](docs/09_blind_zn_run_results.md). **Did not converge**; Zn site verified correct; the pre-registered cofold contact not reproduced
-- [x] Three orthologs cofolded with Zn → [`docs/10`](docs/10_ortholog_zn_cofolds.md). **Zn(Cys)₄ site confirmed with the metal present, same C8/C11/C31/C34 in 15/15 models**; NTD-1 acidic in all three but the fastest-diverging module; charge split is UC5-only
-- [ ] **Record the two ortholog accessions** (marked VERIFY in [`SOURCE.md`](analysis/afold/cofold_zn_three_species/SOURCE.md)) and add both sequences to `data/sequences/` — `docs/10` §2 is unciteable without them
+- [x] Three orthologs cofolded with Zn → [`docs/10`](docs/10_ortholog_zn_cofolds.md). **Zn(Cys)₄ site confirmed with the metal present, same C8/C11/C31/C34 in 15/15 models**; NTD-1 acidic in all three; charge split is UC5-only
+- [x] **18 PF18870+RES orthologs through the per-region identity test, phylogenetically corrected** → [`docs/11`](docs/11_ortholog_panel_divergence.md). Matched `docs/10` §8's **third** registered outcome: **the ribbon diverges as fast as NTD-1 (PGLS p = 0.36), so the N-block is one evolutionary unit and `docs/07` §1's bimodular reading is wrong as an evolutionary claim.** The N-block *is* significantly less conserved than the PF08808 core (p = 0.0004). NTD-1's acidity is the robust family feature — net-negative in 187/190, never positive — while "zero lysines / eleven aspartates" is not
+- [x] **The two ortholog accessions are recorded** → [`data/sequences/SOURCE.md`](data/sequences/SOURCE.md). Both sequences recovered from the AF3 job archives and identified by CRC64 → UniParc, verified position by position: `Kleb_aRES` = **UPI0006936E4D / WP_052450931**, *Klebsiella pneumoniae* (label confirmed); `aRES_Echengduensis` = **UPI0003BED449 / WP_023337974**, ***Enterobacter*** (*E. cloacae* complex — genus right if "E." meant *Enterobacter*, ⚠️ species still unconfirmable from the sequence). Same pass gave **UC5 aRES** its own identifiers — **UPI00038F43E8 / WP_021575732**, with all six of its UniProtKB entries deleted, so quote RefSeq and not UniProt
 - [ ] **Fetch the unclustered HADDOCK score −154.0 structure** from the server — best pose in the run, absent from the summary archive, deleted after two weeks
 - [ ] **AF3 seed replicates of the cofold** — as a general interface-reproducibility check: does *any* NTD-1 contact recur across seeds, and at what ipTM? Not to rescue a particular residue pair
 - [ ] **aRES E89A / E93A + D90A + gp5 R111A** through the 4G/4H assays — E89A tests a conserved structural role, E93A a UC5-specific one, and they are not interchangeable ([`docs/10` §6](docs/10_ortholog_zn_cofolds.md))
-- [ ] **10–20 PF18870+RES orthologs** through the same per-region identity analysis, with phylogenetic correction — pure compute, and the test that decides whether NTD-1's divergence is real ([`docs/10` §8](docs/10_ortholog_zn_cofolds.md))
+- [ ] **`hmmscan` the PF18870 HMM against `data/sequences/ares_uc5.fasta`** — in 190/190 orthologs the domain covers the ribbon's second CxxC and runs past residue 120, which contradicts the `49–136` call quoted in `docs/02`/`03`/`05`/`07`/`08`. One command, and it gates the `docs/08` boundary series ([`docs/11` §5](docs/11_ortholog_panel_divergence.md))
+- [ ] **Swap 1–120, not 49–120, in the NTD-1 chimera panel** — the Pfam domain, the AF3 PAE module and the evolutionary unit all put the boundary elsewhere ([`docs/11` §7](docs/11_ortholog_panel_divergence.md))
+- [ ] **Add one Cys₃His ortholog to the `docs/08` §5 homolog-expansion gene order** — 21% of the family has His at the C11 position, so the strict-Cys₄ reading is cheaply testable ([`docs/11` §4](docs/11_ortholog_panel_divergence.md))
+- [ ] **Per-position invariance profile across the 190-ortholog set** — `docs/11` §1 says NTD-1 diverges as a module, §4 shows a diverging module can still hold near-invariant positions; this is what would actually nominate residues ([`docs/11` §8](docs/11_ortholog_panel_divergence.md))
 - [ ] **Reconcile the UC5 frame** (model has Ile234/Ser293; paper says S234A/V293A) → then the UC5↔S_34AVR map
 - [ ] **λ P / O / Gam co-expression with UC5 aRES** — tests the non-polymerase trigger
 - [ ] **UC5 × GN04826 NTD-1 chimeras**, T7 readout (long lead time — start now). Add the two cofolded orthologs as donors: *Klebsiella* NTD-1 is the informative test of modularity, *E. chengduensis* the folding control ([`docs/10` §7](docs/10_ortholog_zn_cofolds.md))
@@ -200,14 +205,67 @@ frame, and orthologs differ in length (*Klebsiella* aRES is 443 aa against UC5's
 "E93" for another ortholog means nothing until the frames are aligned — and eyeballing an alignment
 is how frame errors get into documents. Global pairwise alignment (BLOSUM62, affine gaps), then
 per-region identity with a two-proportion test, indel positions, invariant positions, and Kabsch CA
-RMSD over chosen regions. Sequences are read from the structures themselves so the alignment and the
-coordinates cannot drift apart.
+RMSD over chosen regions. A structure's sequence is read from its own coordinates so the alignment
+and the coordinates cannot drift apart; **FASTA is also accepted, multi-record, so a whole ortholog
+panel is one argument** (those entries have no coordinates, so the superposition sections skip
+them). The matrices fill a row at a time rather than a cell at a time — ~100× faster, and verified
+to return byte-identical alignments to the cell-at-a-time version, which is what makes a
+190-sequence all-against-all tree (17 955 alignments) practical.
 
 ```bash
 python3 analysis/scripts/homolog_compare.py uc5.cif ortholog1.cif ortholog2.cif \
     --names UC5 E.chengduensis Klebsiella \
     --regions 1-48:Zn-ribbon 49-120:NTD1 126-447:RES \
     --map 8 11 31 34 89 90 93 --conserved 49-120:NTD1 --super 1-48:Zn-ribbon 49-120:NTD1
+
+# a whole panel, writing the per-region counts the panel statistics need
+python3 analysis/scripts/homolog_compare.py data/sequences/ares_uc5.fasta \
+    data/sequences/pf18870_res_panel18.fasta --names UC5 \
+    --regions 1-48:Zn-ribbon 49-120:NTD1 126-447:RES \
+    --identity-tsv results/panel18_region_identity.tsv
+```
+
+[`analysis/scripts/ortholog_panel_stats.py`](analysis/scripts/ortholog_panel_stats.py) — asks
+whether one region of a protein really diverges faster than another **across a panel, once the
+panel's own phylogeny is accounted for.** `homolog_compare.py`'s own z-test treats alignment
+positions as independent observations and orthologs as independent of each other; neither is true,
+and in `docs/11` §2 the difference decides the result — the same data give p < 0.0001 uncorrected
+and p = 0.09–0.30 corrected, for the comparison that does not hold. So this script moves the unit of
+analysis from the position to the ortholog (one paired difference each), tests it three ways
+(**exact** Wilcoxon signed-rank, **exact** sign test, paired *t*), applies Holm–Bonferroni across
+the region pairs, and then fits an intercept-only PGLS against a Brownian covariance built from a
+UPGMA tree of the panel's own all-against-all identities. Redundancy clustering and two jackknives
+answer "is a handful of close relatives carrying this". numpy only — the exact distributions are
+enumerated and the Student-*t* tail is a continued-fraction incomplete beta, all checked against 38
+analytic or brute-forced targets. Any long-format per-region value table works, so the same
+corrected tests apply to `charge_composition.py` output.
+
+```bash
+python3 analysis/scripts/ortholog_panel_stats.py results/panel18_region_identity.tsv \
+    --panel data/sequences/pf18870_res_panel18.fasta \
+    --focal NTD1 --against Zn-ribbon RES \
+    --groups results/panel18_groups.tsv --out-prefix results/panel18
+
+# the same machinery on charge composition
+python3 analysis/scripts/ortholog_panel_stats.py results/panel18_charge.tsv \
+    --unit-col record --metric net_per100 --focal NTD-1 --against Zn-ribbon RES-core \
+    --panel data/sequences/pf18870_res_panel18.fasta
+```
+
+[`analysis/scripts/charge_composition.py`](analysis/scripts/charge_composition.py) — per-region
+Lys+Arg against Asp+Glu, absolute and per 100 residues, with His reported but never counted because
+its charge depends on environment rather than composition. A multi-record FASTA is treated as a
+panel and summarised across it; `--ref` reads the region bounds in the reference's numbering and
+maps them onto each record **through an alignment**, because an ortholog with a 14-residue insertion
+inside NTD-1 does not have NTD-1 at 49–120 in its own frame and slicing 49–120 out of it counts the
+wrong residues. This is what turned `docs/10` §3's three-sequence "zero Lys, eleven Asp" into
+`docs/11` §3's family-level result — the acidity holds in 187/190, the specific counts do not.
+
+```bash
+python3 analysis/scripts/charge_composition.py data/sequences/pf18870_res_panel18.fasta \
+    --ref data/sequences/ares_uc5.fasta \
+    --regions 1-48:Zn-ribbon 49-120:NTD-1 126-447:RES 199-363:RES-core \
+    --tsv results/panel18_charge.tsv
 ```
 
 ## Note on `refs/`

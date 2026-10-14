@@ -1,0 +1,19 @@
+acc	entry_name	organism	taxid	length	id_to_uc5	pf18870_start	pf18870_end	pf08808_start	pf08808_end	genus	phylum
+A0A2M9WDD2	A0A2M9WDD2_9GAMM	Pantoea rodasii	1076549	451	41.0	26	150	191	357	Pantoea	Pseudomonadota
+B1Y0A5	B1Y0A5_LEPCP	Leptothrix cholodnii (strain ATCC 51168 / LMG 8142 / SP-6) (Leptothrix discophora (strain SP-6))	395495	481	35.0	34	172	239	379	Leptothrix	Pseudomonadota
+A0A521DN47	A0A521DN47_9SPHI	Pedobacter westerhofensis	425512	482	33.9	29	165	228	377	Pedobacter	FCB group
+A0A5N7MAN0	A0A5N7MAN0_9HYPH	Microvirga tunisiensis	2108360	489	33.1	30	172	224	379	Microvirga	Pseudomonadota
+R4WPB5	R4WPB5_9BURK	Caballeronia insecticola	758793	499	32.3	144	268	307	472	Caballeronia	Pseudomonadota
+A0ABT1D458	A0ABT1D458_9PROT	Siccirubricoccus soli	2899147	394	31.1	36	163	201	365	Siccirubricoccus	Pseudomonadota
+A0A2P7NRM1	A0A2P7NRM1_9PROT	Nitrosomonas supralitoralis	2116706	404	30.6	41	166	230	383	Nitrosomonas	Pseudomonadota
+A0ABV6FVC9	A0ABV6FVC9_9BACT	Fontibacter flavus	654838	410	30.1	39	164	209	383	Fontibacter	FCB group
+A0A919Q5A9	A0A919Q5A9_9MICO	Demequina activiva	1582364	498	29.5	127	245	315	455	Demequina	Actinomycetota
+A0A2S7X853	A0A2S7X853_9GAMM	Aliivibrio sifiae	566293	390	29.1	41	168	209	377	Aliivibrio	Pseudomonadota
+A0ABY6A846	A0ABY6A846_9GAMM	Thalassolituus hydrocarboniclasticus	2742796	450	28.6	41	166	232	374	Thalassolituus	Pseudomonadota
+A0ABQ6Q009	A0ABQ6Q009_9BACT	Algoriphagus taiwanensis	1445656	419	28.3	38	168	234	380	Algoriphagus	FCB group
+A0ABW1T0I8	A0ABW1T0I8_9ACTN	Longivirga aurantiaca	1837743	393	27.9	40	163	202	360	Longivirga	Actinomycetota
+A0ABU3NJY4	A0ABU3NJY4_9GAMM	Halomonas saccharevitans	416872	406	27.6	41	168	218	374	Halomonas	Pseudomonadota
+A0A840RZ99	A0A840RZ99_9BURK	Inhella inkyongensis	392593	398	27.0	40	165	222	376	Inhella	Pseudomonadota
+F0S5Z8	F0S5Z8_PSESL	Pseudopedobacter saltans (strain ATCC 51119 / DSM 12145 / JCM 21818 / CCUG 39354 / LMG 10337 / NBRC 100064 / NCIMB 13643) (Pedobacter saltans)	762903	383	26.7	41	165	195	371	Pseudopedobacter	FCB group
+A0A371JDE8	A0A371JDE8_9FIRM	Lachnotalea glycerini	1763509	410	26.1	28	166	225	360	Lachnotalea	Bacillota
+A0ABM7SVF0	A0ABM7SVF0_9MYCO	Mycobacterium senriense	2775496	437	25.3	43	167	230	367	Mycobacterium	Actinomycetota

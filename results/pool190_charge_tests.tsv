@@ -1,0 +1,11 @@
+test	distance	comparison	statistic	n	p	p_holm
+wilcoxon_signed_rank_exact	-	NTD-1 - Zn-ribbon	-	190	4.71721e-35	4.71721e-35
+sign_test_exact	-	NTD-1 - Zn-ribbon	161/188	188	8.96991e-16	
+paired_t	-	NTD-1 - Zn-ribbon	-16.4832	190	2.0375e-38	
+wilcoxon_signed_rank_exact	-	NTD-1 - RES-core	-	190	2.16533e-54	4.33066e-54
+sign_test_exact	-	NTD-1 - RES-core	186/190	190	1.32687e-15	
+paired_t	-	NTD-1 - RES-core	-34.1577	190	8.5112e-83	
+pgls_intercept	p-distance	NTD-1 - Zn-ribbon	t=-5.4937 beta=-11.3273	190	1.25978e-07	1.25978e-07
+pgls_intercept	p-distance	NTD-1 - RES-core	t=-11.3608 beta=-14.3692	190	3.91952e-23	7.83904e-23
+pgls_intercept	Poisson-corrected	NTD-1 - Zn-ribbon	t=-3.9122 beta=-11.7122	190	0.000127491	0.000127491
+pgls_intercept	Poisson-corrected	NTD-1 - RES-core	t=-8.1143 beta=-14.3773	190	6.07666e-14	1.21533e-13
