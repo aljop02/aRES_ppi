@@ -3,9 +3,10 @@
 Your Obsidian vault is now in `notes/vault/`. This document reconciles it with `docs/01`–`04`,
 corrects what those got wrong, and says what I think the decisive next steps are.
 
-**Headline: your cofold already supports the hypothesis, and the two escape mutations fit together
-into one coherent mechanism rather than two competing ones.** There is also a measurement
-inconsistency across the three PyMOL panels that should be fixed before the numbers are used.
+**Headline: the vault fixes the domain boundaries, and the cofold supports the hypothesis at domain
+resolution — the N-block faces the gp5 loop.** Its specific residue pair is no longer used (§1.2).
+There is also a measurement inconsistency across the three PyMOL panels that should be fixed before
+the numbers are used (§3).
 
 ---
 
@@ -46,22 +47,21 @@ Your construct list is the right one and I would not change it:
 3. N-block 1–120 (or 1–124)
 4. RES side 126–447 (retains R182, R184)
 
-### 1.2 Your cofold already places the escape residue against NTD-1
+### 1.2 Your cofold — and why its residue pair is no longer used
 
-`notes/vault/figures/Pasted image 20261010161850.png`:
+`notes/vault/figures/Pasted image 20261010161850.png` reports a single inter-chain hydrogen bond
+between the gp5 loop and an acidic residue inside the aRES N-terminal block.
 
-```
-gp5 Ser122 OG  ——  3.062 Å  ——  aRES Asp104 OD2
-    (chain A)                        (chain B)
-```
+**That pair has been dropped from the project.** It was one seed at poor ipTM, the blind docking run
+never reproduced it (0/28 models, 16 Å closest approach — [`09` §4](09_blind_zn_run_results.md)), and
+more exhaustive docking and MD are planned before any specific contact is treated as a candidate
+again.
 
-**aRES Asp104 lies inside the N-terminal block (1–120) and inside PF18870 (49–136).**
-
-So your own cofold independently produces exactly what `docs/02` predicted from the escape-mutation
-genetics (P1) and from domain logic (H1): the residue whose mutation abolishes activation sits in
-direct hydrogen-bonding contact with the uncharacterized N-terminal domain. Two independent lines —
-phage genetics and structure prediction — converging on the same residue pair is the strongest
-result in the project so far.
+**What the cofold still establishes** is the part that never depended on which residues pair up: the
+gp5 **100–125 loop** faces the aRES **N-terminal block**, not the RES domain. That agrees with the
+escape-mutant genetics (`docs/02` P1) and with domain logic (H1), and the blind run independently put
+51% of gp5's interface weight in that loop ([`09` §2](09_blind_zn_run_results.md)). **Domain-level,
+not residue-level, is the resolution this model supports.**
 
 Chain assignment is confirmed internally: the WT panel shows `OD2/106 ASP/A — N/121 GLY/A`, i.e.
 D106 and G121 both in chain A, which is gp5. Your MD plan's step 5 (confirm chain assignment) is
@@ -98,38 +98,27 @@ Please confirm it against Fig. 1B at full resolution before building on it. Flag
 
 ---
 
-## 2. The two mutations are one mechanism, not two hypotheses
+## 2. Why two mutations 16 residues apart give the same phenotype — still open
 
-> **⚠️ Caveat added later, and it applies to this whole section.** Everything below is derived from
-> the geometry of a **single AlphaFold3 cofold at poor ipTM**. It is one observation in one seed,
-> not a working model, and no construct or mutant should be built on it. What survives independently
-> is only that the gp5 **100–125 loop** is the epitope — which rests on escape-mutant genetics, not
-> on any prediction. The specific residue pair, and the scaffold/contact division of labour between
-> D106 and S122, stand or fall with the cofold. See `docs/08` §"D104 is NOT load-bearing".
+gp5 **S122P** and **D106G** were independently isolated, and both escape *both* the UC5 and S_34AVR
+aRES (Fig. 4F). Two chemically unrelated mutations, 16 residues apart, producing the same phenotype
+is a real puzzle, and it still needs an explanation.
 
-Your MD plan frames H1 (loop conformation) and H2 (direct contact) as alternatives. Looking at the
-three panels together, I think they are **sequential steps of a single mechanism**, and that the
-data already point that way:
+**An earlier version of this section gave one** — a two-step "D106 is the scaffold, S122 is the
+contact" model, read off the intramolecular and intermolecular bond geometry of a single AF3 cofold.
+**It is withdrawn.** It rested entirely on that one seed, and its intermolecular half was never
+reproduced ([`09` §4](09_blind_zn_run_results.md)).
 
-| Residue | Bond seen in your models | Type | Role |
-|---|---|---|---|
-| **D106** | D106 OD2 → G121 N, 2.713 Å (WT) | **intramolecular**, within gp5 | holds the loop in the conformation that presents S122 |
-| **S122** | S122 OG → aRES D104 OD2, 3.062 Å | **intermolecular**, gp5 → aRES | the actual recognition contact |
+What survives needs no model: both mutations fall inside the **100–125 loop**, which the blind run
+narrowed to **110–118** ([`09` §2](09_blind_zn_run_results.md)). The simplest reading is that both
+perturb the same local surface — but whether either residue makes a direct contact, and whether one
+acts through the other, is open. That is what the planned exhaustive docking and MD are for, and
+nothing downstream should assume an answer before they run.
 
-Read that way:
-
-> **D106 is the scaffold; S122 is the contact.** D106G escapes *indirectly* by collapsing the loop
-> conformation that displays S122. S122P escapes *directly* by deleting the hydroxyl donor (and
-> adding a proline that rigidifies the backbone).
-
-This explains cleanly why two chemically unrelated mutations, 16 residues apart, produce the same
-phenotype — which is otherwise a coincidence that needs explaining. It also makes a sharp
-prediction: **D106G should weaken binding, S122P should abolish the specific contact**, so the two
-need not behave identically in a pull-down.
-
-Your H3 (neither; the cofold is simply wrong) stays live and must stay live. The loop is in a region
-with no experimental structure and AF3 is being asked to model exactly the part that crystallography
-could not resolve. Treat the S122–D104 contact as a *lead*, not a result, until a pull-down supports it.
+**The experiment that discriminates without a model is still §4:** run both escape mutants, plus
+S122A, through the pull-down (binding) and the co-expression assay (activation). If S122P and D106G
+still bind aRES but no longer activate it, the loop is an activation determinant rather than the
+binding epitope — which would change the model more than any docking result could.
 
 ---
 
@@ -150,9 +139,8 @@ Three different atoms on residue 106. Specifically:
   hydrogen bond — CB is a carbon with no polar hydrogen, and a C···N separation of 2.78 Å would be a
   steric clash, not a contact. Your note next to it ("H-Bond not disrupted?") is reading a number
   that does not describe the H-bond. **Re-measure OD2/106 → N/121 in the S122P model before drawing
-  any conclusion.** It is entirely possible the H-bond really is intact in S122P — that would fit the
-  two-step model above, where S122P acts on the contact rather than the loop — but the current panel
-  does not show it.
+  any conclusion.** It is entirely possible the H-bond really is intact in S122P — which would say
+  S122P does not act by collapsing the loop — but the current panel does not show it either way.
 - **The D106G panel has no alternative** — glycine has no side chain, so N→N is all there is. But
   that means it cannot be compared to a WT OD2→N distance either.
 
@@ -196,24 +184,29 @@ answered directly:
 | D106N | isosteric, loses charge, keeps H-bond capacity | ? | ? |
 | G121A | tests the acceptor side of the intramolecular bond | ? | ? |
 
-**S122A is the discriminator.** Serine→alanine deletes the hydroxyl that donates to aRES D104 but
-adds none of proline's backbone restriction:
+**S122A is the discriminator, and it needs no structural model.** S122P is one of the paper's two
+escape mutations, so the genetics already poses the question: is it the serine's hydroxyl that
+matters, or the proline's backbone restriction? Serine→alanine removes the hydroxyl and adds none of
+proline's rigidity, so it separates the two:
 
-- **S122A escapes** → the mechanism is the **direct H-bond** to aRES D104 (your H2). The cofold
-  interface is real and you have validated an AF3 prediction by mutagenesis.
-- **S122A behaves like WT** → the proline's effect on backbone conformation is what matters (your
-  H1), and the specific OG→D104 contact is not essential.
+- **S122A escapes** → the **side chain** matters, and residue 122 is doing chemistry at the
+  interface rather than shaping the loop.
+- **S122A behaves like WT** → the **proline's effect on backbone conformation** is what matters, and
+  the escape is conformational.
 
-Either outcome is publishable-grade mechanism, and it costs one primer pair.
+Either outcome is publishable-grade mechanism, and it costs one primer pair. Note what it does *not*
+do: it says nothing about which aRES residue is on the other side. That question is now deliberately
+open until the exhaustive docking and MD runs land (§2).
 
-**The reciprocal test is just as cheap and nobody has done it: aRES D104.** If D104 is the partner,
-then **aRES D104A / D104N should lose responsiveness to WT gp5 while retaining NADase activity.**
-That is the aRES-side proof of the interface, and it is the first functional test ever aimed at
-PF18870. Pair it with R182A/E236A as catalysis-dead controls so you can show loss of *defense* with
-retained *catalysis* — see `docs/02` §9 on why that control is non-negotiable.
+**The aRES-side test is the charge panel, not a single partner residue.** Run **E89A, E93A and D90A**
+with **gp5 R111A** — these come from the blind run's reproducible salt bridges rather than from one
+cofold pose, they test the acidic-NTD-1-against-basic-loop model as a model, and they are the first
+functional tests ever aimed at PF18870 (`docs/09` §5, `docs/10` §6). Pair them with R182A/E236A as
+catalysis-dead controls so you can show loss of *defense* with retained *catalysis* — see
+`docs/02` §9 on why that control is non-negotiable.
 
-> If one experiment gets done in the rotation beyond the chimeras, make it **gp5 S122A + aRES D104A
-> through the 4G/4H assay pair.**
+> If one experiment gets done in the rotation beyond the chimeras, make it **aRES E89A / E93A / D90A
+> + gp5 R111A through the 4G/4H assay pair**, with gp5 S122A alongside.
 
 ---
 
@@ -222,9 +215,10 @@ retained *catalysis* — see `docs/02` §9 on why that control is non-negotiable
 It is a good plan and I would not restructure it. Three comments:
 
 1. **Tier 2 (the complex) is more informative than Tier 1 and should not wait on it.** The question
-   that matters is whether the S122–D104 contact persists, and whether the WT interface is stable at
-   all. If the WT complex interface falls apart in the first 100 ns, you learn that before investing
-   in mutant monomer runs.
+   that matters is whether the WT interface is stable at all, and which contacts — if any — survive
+   a trajectory. If the WT complex interface falls apart in the first 100 ns, you learn that before
+   investing in mutant monomer runs. Let the run nominate contacts; do not go in with a pair to
+   confirm.
 2. **Add the Cα–Cα and loop-RMSD metrics from §3** as the primary H1 readout, so the analysis does
    not depend on an atom that is absent in some variants.
 3. **Your setup step 1 — five AF models with different seeds, keeping models whose 100–125 loop
@@ -239,26 +233,26 @@ meaningful once §1.4 is confirmed. Check Fig. 1B first.
 
 ## 6. Revised priorities
 
-What changed now that the vault is integrated: the cofold exists, the domain boundaries are real,
-and the structural lead is already supported. The bottleneck is no longer prediction — it is
-**experimental discrimination**.
+What changed now that the vault is integrated: the cofold exists and the domain boundaries are real,
+but the structural lead is supported only at **domain** resolution (§1.2). The bottleneck is no
+longer prediction — it is **experimental discrimination**.
 
 | Priority | Action | Why |
 |---|---|---|
 | 1 | **Confirm the Fig. 1B specificity claim** (§1.4) | Gates the chimera design and MD Tier 4; costs one figure lookup |
 | 2 | **Re-measure the three panels consistently** (§3) | The current numbers are not comparable |
 | 3 | **gp5 variant panel through 4G/4H** (§4) | Answers "binding or activation" directly; no phage genetics |
-| 4 | **aRES D104A/D104N** (§4) | First functional test of PF18870; reciprocal proof of the interface |
+| 4 | **aRES E89A / E93A / D90A + gp5 R111A** (§4) | First functional test of PF18870; tests the charge model rather than one predicted contact |
 | 5 | **NTD-1 domain-swap chimeras** (`docs/02` P2) | Still the cleanest test of the central hypothesis; long lead time, start cloning now |
 | 6 | **AF3 seed spread on the loop** (MD plan step 1) | Tells you how much to trust the cofold at all |
 | 7 | MD Tier 2, then Tier 1/3 | Mechanism, once the above says the interface is worth simulating |
-| 8 | Conservation/SDP analysis (`docs/03` T4) | Is aRES D104 conserved? Cheap, independent, and strengthens everything above |
+| 8 | Conservation/SDP analysis (`docs/03` T4) | Which NTD-1 surface positions vary with phage range? Cheap, independent, and nominates mutagenesis targets |
 
-Item 8 deserves a note: **check whether D104 is conserved across aRES homologs.** If the aspartate
-at the equivalent position is conserved in T7-responsive aRES proteins and absent or substituted in
-non-responders, that is an independent evolutionary argument for the interface, obtained without a
-single experiment. It needs the homolog list from Tables S2/S3 — still the top acquisition item in
-`docs/04`.
+Item 8 deserves a note on how to read it. `docs/10` §2 argues NTD-1 is the **fastest-diverging**
+module in the protein, which is what a specificity sensor should look like — so conservation here
+picks the *question*, not the answer. Positions that vary between aRES proteins with different phage
+ranges are the interesting ones; a position conserved across all of them is more likely structural.
+It needs the homolog list from Tables S2/S3 — still the top acquisition item in `docs/04`.
 
 ---
 
@@ -267,5 +261,6 @@ single experiment. It needs the homolog list from Tables S2/S3 — still the top
 - Supplementary Tables S2/S3/S4, and Fig. 1B at full resolution (`docs/04`)
 - The actual cofold model files — the vault has figures but no `.cif`/`.pdb`. Upload them and
   `analysis/scripts/interface_contacts.py` can give the full interface contact list, the NTD-1 vs
-  RES breakdown, and the seed-to-seed reproducibility of the S122–D104 contact in one command.
+  RES breakdown, and the seed-to-seed reproducibility of *every* interface contact in one command —
+  which is the right way round: let the analysis nominate contacts rather than checking one pair.
 - The blind HADDOCK run output, for the same reason.

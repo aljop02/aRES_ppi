@@ -25,7 +25,7 @@ The 459-aa `aRES` sequence is **byte-identical** to
 [`data/sequences/ares_uc5.fasta`](../../../data/sequences/ares_uc5.fasta)
 (*E. coli* UC5). Verified by string comparison, not by eye. Every residue number in
 `docs/10` is therefore in the UC5 frame that the rest of the repo uses, with no
-offset — and C8/C11/C31/C34, E89, E93 and D104 all refer to the same residues as in
+offset — and C8/C11/C31/C34, E89, D90 and E93 all refer to the same residues as in
 `docs/05`–`docs/09`.
 
 ## ⚠️ VERIFY: the two ortholog accessions are unrecorded

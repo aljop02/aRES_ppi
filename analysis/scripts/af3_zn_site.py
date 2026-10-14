@@ -32,7 +32,7 @@ Usage
 -----
   python3 af3_zn_site.py <dir-with-model-cifs> [...] \
       --regions 1-48:Zn-ribbon 49-120:NTD1 126-447:RES 448-459:tail \
-      --residues 89 93 104 \
+      --residues 89 90 93 \
       --tsv results/zn_sites.tsv
 """
 

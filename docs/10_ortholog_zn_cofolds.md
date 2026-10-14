@@ -8,8 +8,9 @@ Machine-readable output: [`results/zn_cofold_sites.tsv`](../results/zn_cofold_si
 **Verdict. The Zn(Cys)₄ ribbon that [`docs/07`](07_docking_run_review.md) §1 inferred from UC5
 cysteine geometry alone is confirmed with the metal actually present, and it is the same site in
 all three orthologs — 15/15 models, no exceptions.** Beyond that, these runs are mostly *negative*
-work on the project's own claims: they qualify the charge-split finding as UC5-specific, show D104
-is not conserved, and retract an apparent domain rearrangement as a PAE artifact. One result is new
+work on the project's own claims: they qualify the charge-split finding as UC5-specific, add a
+final nail to the already-dropped cofold contact, and retract an apparent domain rearrangement as a
+PAE artifact. One result is new
 and cheap to act on: NTD-1's acidic character is a family feature while its sequence is the
 *least* conserved part of the protein.
 
@@ -189,29 +190,12 @@ further things it shows:
 
 ---
 
-## 5. D104 is not conserved
+## 5. The cofold's nominated contact residue is not conserved
 
-| UC5 | E.chengduensis | Klebsiella |
-|---|---|---|
-| **D104** (pLDDT 63) | **D104** (pLDDT 63) | **G105** (pLDDT 63) |
-
-The D104–S122 hydrogen bond is the structural basis of the two-escape-mutation story in
-[`docs/05`](05_status_after_vault_integration.md) §2 and the README's point 1. It is now resting on
-three weak legs at once:
-
-1. **one** cofold model, with no replicate seeds;
-2. a residue at **pLDDT 63** in every ortholog — the lowest-confidence position of any discussed in
-   this document;
-3. **no independent support** from the blind run, which never put D104 within 16 Å of S122
-   ([`docs/09`](09_blind_zn_run_results.md) §4);
-4. and now a position that is **not conserved** — glycine in Klebsiella, which cannot donate or
-   accept that bond at all.
-
-**This does not refute the contact.** Klebsiella aRES may have a different trigger entirely —
-`docs/06` §2 already establishes that at least one aRES trigger is not a polymerase, so there is no
-reason its NTD-1 should contact a T7 gp5 loop. A specificity module *should* vary at its contact
-residues. But the contact can no longer be described as a general recognition mechanism, and the
-**AF3 seed replicates stay the load-bearing next step** they became in `docs/09`.
+Residue 104 is Asp in UC5 and *E. chengduensis* but **Gly in Klebsiella** (G105 in its own frame),
+and it sits at **pLDDT 63** in all three — the lowest-confidence position of any discussed here.
+Consistent with the cofold pair having been dropped
+([`docs/09`](09_blind_zn_run_results.md) §4); nothing in the project now depends on it.
 
 ---
 
@@ -256,7 +240,7 @@ the *question*, not the answer.
 **Not licensed:**
 - Anything about the N-block-to-RES architecture, hinge angle, or whole-chain shape (§4).
 - Anything about the tail, or about 364–447 (§4).
-- The D104–S122 contact, which these runs weaken rather than support (§5).
+- The cofold's nominated residue pair, which these runs weaken further and which is dropped (§5).
 - Any claim about phage-protein recognition: **no trigger was in any of these jobs.**
 
 **A free folding-control set for the chimera experiment.** The README's P2 — swapping NTD-1 between
@@ -279,8 +263,8 @@ wanted that needs no truncation design, that is the one.
    marked VERIFY until then, and §2's whole comparison is unciteable without them.
 2. **E89A, E93A and D90A** through the 4G/4H assays, framed as in §6 — they test different
    hypotheses, so run them together and do not treat E93A as the weak one.
-3. **AF3 seed replicates of the aRES×gp5 cofold.** Unchanged from `docs/09`, and §5 raises the
-   stakes: D104 is now both low-confidence and non-conserved.
+3. **AF3 seed replicates of the aRES×gp5 cofold.** Unchanged from `docs/09`: a general
+   interface-reproducibility check, not a test of any one pair.
 4. **Zn in all buffers** for every ortholog construct (§1).
 5. **Run `af3_pae_blocks.py` before any inter-domain claim** from an AF3 model, including the
    existing cofold. §4 is what happens when that check is skipped.

@@ -174,9 +174,10 @@ residues 1--48, discount them until the run is repeated with Zn modelled.
 % =====================================================================
 \section{The escape-mutant contacts}
 
-Both T7 gp5 escape mutants (\textbf{S122P}, \textbf{D106G}) sit in the same 100--125 loop. The
-working two-step reading: \textbf{D106 is the scaffold that presents the loop, S122 is the contact.}
-D106 caps the G121 backbone amide \emph{within} gp5; S122 reaches across to aRES.
+Both T7 gp5 escape mutants (\textbf{S122P}, \textbf{D106G}) sit in the same 100--125 loop, which the
+blind run narrowed to \textbf{110--118} (R111 and G117 in 28/28 models). Why two chemically unrelated
+mutations 16 residues apart give the same phenotype is \textbf{still open}: an earlier two-step
+``scaffold and contact'' reading was withdrawn with the cofold pair it was built on.
 
 \textcolor{slotline}{\textbf{Before re-rendering, note the problem with the existing panels:}} the
 three PyMOL measurements are not like-for-like --- WT measured OD2(106)$\rightarrow$N(121)
@@ -195,15 +196,16 @@ D106G has no side chain, so it cannot have that bond.}
 
 \figslot{The cofold interface}
 {The aRES N-block and the gp5 100--125 loop at the predicted interface, with every polar contact
-under 3.5\,\AA{} labelled --- not only S122$\rightarrow$D104. Mark which aRES residues are in
+under 3.5\,\AA{} labelled. Mark which aRES residues are in
 1--48 (Zn ribbon, discount) versus 49--120 (PF18870, real).}
 {sele iface, (chain A within 5 of chain B); distance polar, chain A, chain B, 3.5, mode=2}
 {cofold\_interface.png}
 
-\textbf{Treat this interface as provisional.} The S122\,OG\,$\rightarrow$\,D104 hydrogen bond
-(3.06\,\AA) comes from \emph{one} cofold, one seed, at poor ipTM. What does not depend on it: the
-epitope is the 100--125 loop, which comes from phage genetics --- two independently isolated escape
-mutants, each escaping both aRES variants.
+\textbf{Treat this interface as provisional, and at domain resolution only.} The specific residue
+pair this cofold once nominated has been \textbf{dropped} --- one seed, poor ipTM, and never
+reproduced (0/28 docking models, 16\,\AA{} apart). What does not depend on it: the epitope is the
+100--125 loop, which comes from phage genetics --- two independently isolated escape mutants, each
+escaping both aRES variants --- and the loop faces the N-block rather than the RES domain.
 
 % =====================================================================
 \section{What has actually been run}
@@ -217,7 +219,7 @@ mutants, each escaping both aRES variants.
 AF3 monomer + PAE & Hinge at 122; block map above & Done, drives the constructs\\
 InterPro / Pfam & PF18870 49--136 & Done; RES accession to confirm\\
 Zn site scan & Zn(Cys)$_4$ at C8/C11/C31/C34 & Done, with gp5 negative control\\
-AF3 cofold aRES\,+\,gp5 & S122\,OG--D104 3.06\,\AA & One seed --- needs the per-seed audit\\
+AF3 cofold aRES\,+\,gp5 & gp5 loop faces the N-block & One seed; its named residue pair is dropped\\
 HADDOCK blind run & --- & Output not yet in the repo\\
 HADDOCK one-sided restrained & Both escape residues buried & Done; see \texttt{docs/07}\\
 Sequence checks & 6 Cys in 1--120; \textbf{no Lys in 49--120} & Done --- constrains amine-reactive
@@ -226,9 +228,10 @@ crosslinking directly\\
 \end{tabular}
 \end{center}
 
-\textbf{Free and not yet done:} the per-seed audit of the cofold (ipTM, interface PAE, how often the
-D104--S122 contact appears across seeds). It decides whether the interface in \S4 deserves any
-further work, and it needs only the model files, which are not yet in the repo.
+\textbf{Free and not yet done:} the per-seed audit of the cofold (ipTM, interface PAE, and how often
+\emph{any} NTD-1 contact recurs across seeds --- letting the audit nominate contacts rather than
+testing a pair chosen in advance). It decides whether the interface in \S4 deserves any further work,
+and it needs only the model files, which are not yet in the repo.
 
 \setlength{\fboxsep}{8pt}
 \noindent\fcolorbox{navy}{white}{\begin{minipage}{\dimexpr\linewidth-2\fboxsep-2\fboxrule\relax}

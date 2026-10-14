@@ -18,7 +18,6 @@ chain A, 1–447; partner 2 = gp5 chain B, 1–704). All of them hold:
 | **Two further cysteines in the N-block: C78, C96** | ✅ six Cys in 1–120, not four |
 | **No lysine anywhere in 49–120** | ✅ all ten N-block lysines are in the ribbon (K3, K5, K10, K15, K23, K35, K37, K39, K44, K48) |
 | Five methionines in 1–120 (M1, M18, M49, M50, M60) | ✅ SeMet is viable |
-| D104 is Asp | ✅ |
 | R182, R184, R215, E236 | ✅ all match the paper |
 | **Residue 234 is Ile, 293 is Ser** | ⚠️ the paper's defence-null list says **S234A** and **V293A** |
 
@@ -40,41 +39,6 @@ alternative is that the model is a different UC5 isolate. **This is upstream of 
 plan and of the UC5↔S_34AVR map**, so resolve it against the primary sequence record before
 ordering anything. Four of six positions verify, so this is a localised problem, not a wholesale
 frame error.
-
-## ⚠️ D104 is NOT load-bearing — read this before §2
-
-The plan below was written treating the AlphaFold3 cofold contact (gp5 Ser122 → aRES Asp104) as a
-working model. **That is too strong.** It is a single observation, in one seed, at poor ipTM. It has
-not earned the weight several sections give it, and no resource should be committed to it before
-independent evidence arrives. The docking runs in `analysis/docking/` are exactly that evidence
-being gathered — do not pre-empt them.
-
-**What dies if the cofold is wrong:** D104 as the specific partner; the pre-registered crosslink
-target set (D104, D106, D97, E98, D112); aRES D104A/D104N as constructs; the "D106 scaffold /
-S122 contact" two-step model in `docs/05` §2, which was derived from the cofold's own geometry.
-
-**What is untouched, because it never came from the cofold:**
-
-| | Source of evidence |
-|---|---|
-| The gp5 epitope is the ~100–125 loop | **Phage genetics** — two independently isolated escape mutants (S122P, D106G), each escaping *both* the UC5 and S_34AVR aRES. The hardest evidence in the project |
-| NTD-1 is the sensor module | The authors' own statement + domain architecture (PF18870 fused to RES, HEPN, ABC ATPase) |
-| The Zn(Cys)₄ ribbon | Monomer model geometry, pLDDT 90.8 |
-| Domain boundaries 1–120 / hinge / 126–447 | Monomer PAE |
-| NTD-1 has no lysine, so BS3/DSS cannot report it | A fact about the sequence |
-| GN04826 as the natural non-binder | Fig. 1B |
-| **All of Track D** | One protein; no interaction required |
-
-**And the experiments that matter most were never D104-dependent:** does the isolated N-block bind
-gp5·TrxA at all; does it compete in trans; does the gp5 98–132 peptide activate; does
-gp5(Δ118-123)·TrxA still activate; what is the Kd. Each tests "is NTD-1 the sensor" and "is the loop
-the epitope" **without naming a residue pair.** Those stay exactly as planned.
-
-**Consequences applied below:** P2 is restated at the level the evidence supports; aRES D104A/D104N
-leave the week-1 gene order; XL-MS becomes a *discovery* experiment across the whole acidic face of
-the N-block rather than confirmation of a pre-registered pair (the prediction is still written down
-first — it is just no longer the design basis); and Decision Point 1 asks whether *any* NTD-1
-contact reproduces, not whether that one does.
 
 ---
 
@@ -119,8 +83,8 @@ Every one of these is currently a prediction. For each: what kills it, and how c
 
 | # | Prediction | Current evidence | Experiment that kills it | Cost |
 |---|---|---|---|---|
-| **P1** | The AlphaFold3 cofold interface is real | One cofold, one pose | **Interface-confidence audit**: ipTM, interface PAE, and per-seed frequency of the D104–S122 contact across all seeds. If it appears in 1 of 5 seeds, stop and rethink before ordering a primer | **Free, day 1** |
-| **P2** | The gp5 100–125 loop contacts the aRES N-block *(restated — the earlier form, "Ser122 contacts Asp104", overstates one low-ipTM seed)* | Escape-mutant genetics for the loop; the residue pair rests on one cofold only | **Zero-length XL-MS** (EDC/DMTMM): gp5 K103/K114/K118 → an aRES acidic residue in 49–120. Plus gp5(Δ118-123)·TrxA activation test — a *published, catalytically competent* deletion construct (1T7P/1TK0 carry DEL(118-123)) that removes G121/S122 outright. If Δ118-123 still activates aRES, S122 is not the contact | XL-MS ~100 µg; Δ-construct is one clone |
+| **P1** | The AlphaFold3 cofold interface is real | One cofold, one pose | **Interface-confidence audit**: ipTM, interface PAE over the whole interface, and the per-seed recurrence of *any* NTD-1 contact. If no contact survives more than 1 of 5 seeds, stop and rethink before ordering a primer. Let the audit nominate contacts — do not go in with a pair to confirm | **Free, day 1** |
+| **P2** | The gp5 100–125 loop contacts the aRES N-block | Escape-mutant genetics for the loop, plus the blind run's 28/28 recovery of R111 and G117 (`docs/09` §2). Domain-level, not residue-level | **Zero-length XL-MS** (EDC/DMTMM): gp5 K103/K114/K118 → any aRES acidic residue in 49–120. Plus gp5(Δ118-123)·TrxA activation test — a *published, catalytically competent* deletion construct (1T7P/1TK0 carry DEL(118-123)) that removes the tip of the loop outright. If Δ118-123 still activates aRES, the loop tip is not the trigger | XL-MS ~100 µg; Δ-construct is one clone |
 | **P3** | NTD-1 is the sensor module (not the RES block, not the Zn ribbon) | Domain architecture + the authors' own statement; *not* the cofold | **Does the isolated N-block bind gp5·TrxA?** MST/nanoDSF-FoldAffinity + protease protection. And: does excess N-block *compete* in trans against gp5-driven activation of full-length aRES, on the established NAD/NADH-Glo assay? | ~1 µg labelled N-block per titration; one plate |
 | **P4** | aRES carries a structural Zn(Cys)4 site | AlphaFold SG–SG geometry only (3.55–3.81 Å, ideal 3.76; no metal in the model) | **ICP-MS/OES stoichiometry + native ESI-MS (+63.4 Da) + Zn K-edge XANES at PETRA III P64.** XAS gives coordination number, ligand type (S vs N/O) and Zn–S distance directly | ICP ~0.2 mg; XAS is on-campus |
 | **P5** | aRES is a monomer and the complex is 1:1 | Assumed throughout | **SEC-MALS or AUC on aRES alone, before any stoichiometry is quoted.** The only solved RES-NADase structure (6GW6, P. putida RES–Xre, 2.2 Å) is built on a central **RES toxin dimer**. If aRES dimerises, apo aRES is ~100 kDa — unresolvable from 92 kDa gp5·TrxA by mass photometry — and every mass, mask volume and particle-count figure in the cryo-EM plan is wrong | One SEC run |
@@ -139,11 +103,11 @@ Four results that change the plan:
 
 Residues 49–120 contain **no lysine at all**. The only basic residues are R69, R109, R117. All ten N-block lysines are in the Zn ribbon: K3, K5, K10, K15, K23, K35, K37, K39, K44, K48.
 
-Nearest Lys of any kind to Asp104 (Cα–Cα): K48 **21.3 Å**, K44 23.3, K3 24.6, K5 28.0 — all ribbon — then RES-block K274 **29.3 Å**, K281 **32.2 Å**.
+Nearest Lys of any kind to the centre of the NTD-1 acidic face (Cα–Cα, measured from residue 104): K48 **21.3 Å**, K44 23.3, K3 24.6, K5 28.0 — all ribbon — then RES-block K274 **29.3 Å**, K281 **32.2 Å**.
 
 Consequences: (i) a Lys–Lys crosslinker can *never* place the gp5 loop "on NTD-1"; (ii) **a BS3 crosslink from the gp5 loop to K274 or K281 sits inside the ~30 Å convention and therefore does not refute the NTD-1 hypothesis** — do not read it as refutation; (iii) the gp5 side is fine (K103 at 8.2 Å from S122, K118 at 8.3, K114 at 13.6), so the problem is entirely on the aRES side.
 
-**(b) There is a genuine acidic patch around Asp104**, which is the real reason zero-length chemistry suits this interface: D106 (5.6 Å), D97 (13.2), E98 (13.6), D112 (16.8), E93 (17.7), E62 (17.0). Pre-register these as the EDC/DMTMM target set.
+**(b) NTD-1 has a genuine contiguous acidic face**, which is the real reason zero-length chemistry suits this interface: within ~17 Å of one another sit E62, E93, D97, E98, D106 and D112. Treat the whole face as the XL-MS search space (§I3) rather than pre-registering a pair inside it.
 
 **(c) SeMet is viable — this was an open question and the answer is good.** The N-block 1–120 contains **five methionines (M1, M18, M49, M50, M60)**, i.e. one per 24 residues. Excellent anomalous density for a 14 kDa fragment. 49–136 retains M49/M50/M60. So experimental phasing has a second route if zinc turns out substoichiometric.
 
@@ -198,7 +162,7 @@ Nothing here needs protein, beamtime, or training. Do all of it.
 
 **Dry (2–3 days total, not the 2–3 days per item the proposals claimed):**
 
-1. **Cofold interface audit (P1).** Run `analysis/scripts/interface_contacts.py` across all AF3 cofold models with `--domain A:1-120:NTD1 --roi B:100-125:loop`. Report ipTM, interface PAE at the D104–S122 pair, and the per-seed contact frequency. *The cofold coordinates are not yet in `analysis/afold/` — deposit them first.*
+1. **Cofold interface audit (P1).** Run `analysis/scripts/interface_contacts.py` across all AF3 cofold models with `--domain A:1-120:NTD1 --roi B:100-125:loop`. Report ipTM, interface PAE across the interface, and the per-seed frequency of every contact it finds. *The cofold coordinates are not yet in `analysis/afold/` — deposit them first.*
 2. **Reconcile the UC5 frame** (the I234/S293 discrepancy in §3e), then build the UC5→S_34AVR map by **two** routes: full-length MAFFT/MUSCLE MSA for the ribbon (1–48, which `hmmalign` against PF18870 **cannot** align, because PF18870 starts at 49) and `hmmalign` for 49–136, cross-checked by US-align superposition. Commit as a versioned TSV. Do **not** use an S_34AVR+gp5 cofold as a mapping vote — that is a prediction validating a prediction.
 3. **Fix the Pfam accession**: the RES NADase domain is **PF08808**, not PF08808 (which is a histone-like DNA-binding family). Any HMM search built on the wrong number returns the wrong family.
 4. **Specificity-determining-position scan** across T7-defending homologs (UC5, S_34AVR) vs **GN04826** (near-identical phage range, fold defence **1** against T7). Positions differing in the N-block are candidate epitope contacts. This nominates both mutants and chimera boundaries, and it is the highest-information dry item in the project — higher than the numbering map.
@@ -209,7 +173,7 @@ Nothing here needs protein, beamtime, or training. Do all of it.
 
 7. **aRES boundary series, 5 constructs, one batch** — S_34AVR 1-124, 1-136, 49-136, 40-124, plus UC5 1-136 as the one cheap bet (full-length UC5 is insoluble; isolated domains often behave where the parent did not, and the escape phages were isolated against UC5). Fold **3–4 extra PF18870 orthologs at the lead boundary into the same order** — homolog expansion is the highest-yield crystallisation rescue and ordering it now makes it available in month 2 instead of month 5. All **C-terminal TEV-His6**: C8 is residue 8, so an N-terminal tag sits on the first CxxC during folding, and six histidines compete with four cysteines for Zn(II). Cut GN04826 from the *solubility* panel and keep it as the **functional negative control** (§8.2). Drop the SUMO hedge until C-terminal has actually failed.
 8. **gp5·TrxA artificial operon**, following Chiu/Tillett/March 2006 (up to 90% of gp5 soluble with TrxA co-expression vs insoluble without; 97% pure in one Ni step; ~1:1 TrxA; full activity, no exogenous Trx). **One change, and it is the opposite of what was proposed: tag gp5 C-terminally and leave TrxA untagged.** A His tag on TrxA makes Ni select for TrxA — free overexpressed 12 kDa TrxA-His6 dominates the eluate, and gp5 bound to endogenous untagged TrxA is lost in the flowthrough. The gp5 C-terminus is in the polymerase domain, far from both the TrxA-binding thumb loop (~258–333) and the epitope.
-9. **gp5 variants**: S122P, D106G, **S122A** (removes the hydroxyl without proline's backbone rigidity — the only way to separate "direct contact" from "loop conformation"), and **Δ118-123** (the published 1T7P/1TK0 deletion, catalytically competent, removes G121/S122 outright).
+9. **gp5 variants**: S122P, D106G, **S122A** (removes the hydroxyl without proline's backbone rigidity — the only way to separate "the side chain matters" from "the backbone conformation matters"), and **Δ118-123** (the published 1T7P/1TK0 deletion, catalytically competent, removes G121/S122 outright).
 10. **gp5 exonuclease fragment at 1–187**, with one alternative at ~1–200. **Not 1–250**: the exonuclease domain is 1–187 and the polymerisation domain is 188–698, so 1–250 ends mid-fold. Note the epitope is *inside* a T7-specific helix-loop-helix insertion (~102–122), not adjacent to one, so 1–187 keeps it intact.
 11. **Three peptides**: gp5 98–132 WT, S122P, D106G. Cheap, arrive in milligrams, and they gate a lot (§8.4).
 
@@ -271,7 +235,7 @@ But note the self-inflicted trap: **1–120 truncates the Pfam domain by 16 resi
 
 Be realistic: a 14 kDa all-α domain tethered to a zinc ribbon across a flexible hinge is **not** a favourable crystallisation shape — high solvent content, few flat surfaces. ~35–45% chance of any hit.
 
-**Rescue, if dry:** homolog expansion only (already in the week-1 gene order, so available from month 2), with the original construct always on a side-by-side control plate so a hit is attributable. Surface-entropy reduction is second, and its exclusion zone must be **the whole candidate epitope face** defined from the UC5/GN04826 divergence pattern, not just a few residues around D104. Reductive methylation and microseeding are afterthoughts. **Nanobodies/sybodies are out** — 2–3 months before a candidate exists, and you then still have to crystallise the complex.
+**Rescue, if dry:** homolog expansion only (already in the week-1 gene order, so available from month 2), with the original construct always on a side-by-side control plate so a hit is attributable. Surface-entropy reduction is second, and its exclusion zone must be **the whole candidate epitope face** defined from the UC5/GN04826 divergence pattern, not just a few residues around one predicted contact. Reductive methylation and microseeding are afterthoughts. **Nanobodies/sybodies are out** — 2–3 months before a candidate exists, and you then still have to crystallise the complex.
 
 ### D4. Phasing — inverted from what was proposed
 **Collect the best-resolution native dataset you can and solve by molecular replacement with the AlphaFold model.** At mean pLDDT ~90 Phaser will probably solve it in minutes. "No close homolog, so MR is unavailable" is no longer true.
@@ -308,21 +272,23 @@ These appeared in the "missing experiments" list of **all four** expert areas. T
 - **GN04826 aRES as the natural non-binder.** Near-identical phage range to UC5 but **fold defence 1 against T7**. A correctly folded, independently evolved protein that should not respond to the trigger — immune to the "your mutant is misfolded" objection in a way no point mutant is. Run it alongside WT in every binding, crosslinking, footprinting and activation experiment.
 - **A non-trigger ligand**: S_34AVR defends T7, SECφ18 and SECφ4 but not T5 or T4, so T5 DNA polymerase or T4 gp43 should give no binding. Without it, every Kd is uncontrolled for the sticky-protein artefacts that are the characteristic failure mode of SPR and MST at micromolar analyte. TrxA alone is far too easy a test.
 - **gp5 escape and alanine variants with a folding gate.** S122P and D106G are the phenotype; **S122A** separates contact from conformation; **Δ118-123** is the published, catalytically competent loop deletion. Note the reasoning on D106 must be the right way round: **D106G was isolated as a viable escape phage, so that polymerase folds and replicates a genome.** The 0.6% RSA burial argument predicts misfolding for the *novel* D106A/D106N, not for the escape mutation itself. Gate the novel ones by Tm + primer extension on the reconstituted 1:1 complex with 5 µM free TrxA.
-- **aRES D104A/D104N — removed from the week-1 gene order.** Building point mutants on a single
-  low-ipTM cofold pose is the clearest case of over-committing to an unvalidated prediction. Order
-  them only once the docking runs or the GN04826 divergence analysis nominate a surface
-  independently. The phenotype has also never been shown.
+- **Point mutants of a single cofold-nominated contact residue — never ordered, and the prediction
+  behind them is now withdrawn** (`docs/09` §4). Building mutants on one low-ipTM pose is the
+  clearest case of over-committing to an unvalidated prediction. The aRES-side mutants that *are*
+  in the plan (E89A/E93A/D90A) come from the blind run's reproducible salt bridges and from the
+  ortholog charge comparison instead — see `docs/09` §5 and `docs/10` §6.
 - **A one-plate "is anything missing?" control**: activation ± DNA, ± dNTPs, ± Mg²⁺, ± aRES-null E. coli lysate. One day, and it protects every negative result in the project from the "you were missing a cofactor" objection.
 
 ### I3. The interface restraint set — XL-MS, with the chemistry fixed
 This is Track I's realistic deliverable. ~100 µg, no crystals, no beamtime, no microscope queue, 4–6 weeks at the EMBL PCF (BS3/DSS/DSG/EDC/DSPP listed; 50 µg per sample at ≥0.2 mg/mL; user does the chemistry to the quench step).
 
 **Chemistry, decided by §3a:**
-- **EDC, or preferably DMTMM, is the sole interface chemistry.** Zero-length Lys↔Asp/Glu matches this interface because the predicted contact is to an acidic residue and there is a real acidic patch around D104. DMTMM works at pH 7.5; EDC needs pH ~6 in MES, activates every carboxylate in a 143 kDa complex, is known for non-specific laddering at ~7 µM protein, and asks the complex to survive pH 6 — untested. Ask PCF for DMTMM.
+- **EDC, or preferably DMTMM, is the sole interface chemistry.** Zero-length Lys↔Asp/Glu matches this interface because NTD-1 presents a contiguous acidic face (§3b) to a basic gp5 loop. DMTMM works at pH 7.5; EDC needs pH ~6 in MES, activates every carboxylate in a 143 kDa complex, is known for non-specific laddering at ~7 µM protein, and asks the complex to survive pH 6 — untested. Ask PCF for DMTMM.
 - **Run it as discovery, not confirmation.** Search the whole acidic face of the N-block, not a
-  pre-chosen pair. *Write the prediction down first* — gp5 K103/K114/K118 → aRES D104, D106, D97,
-  E98 or D112 — so a hit on it means something; but do not design the experiment around it, because
-  it comes from one low-confidence pose. A crosslink anywhere in 49–120 answers P3.
+  pre-chosen pair. *Write the prediction down first* — gp5 K103/K114/K118 → some acidic residue on
+  the NTD-1 face (§3b) — so a hit on it means something; but do not name the partner in advance,
+  because the only pose that ever did came from one low-confidence model. A crosslink anywhere in
+  49–120 answers P3.
 - **BS3/DSS is demoted to the intramolecular folding control** that validates the S122P and D106G preps. It cannot report NTD-1 and a RES-block hit does not refute anything (§3a).
 - Sulfo-SDA / genetically encoded pBpa would capture a Ser–Asp contact directly but need bespoke non-specific database searching and are not rotation-scale.
 - **A crosslinked sample can never feed a conformational-heterogeneity analysis.** Always keep an uncrosslinked reference.
@@ -358,7 +324,7 @@ Do it at the SPC, not at a beamline. Analytical SEC + DLS + nanoDSF + A280 answe
 
 | # | Trigger | If yes | If no |
 |---|---|---|---|
-| **1** | Does **any** NTD-1 contact reproduce across cofold seeds and across the two docking runs, and at what ipTM? *(Not: does D104–S122 specifically reproduce)* | The N-block is the contacting domain on two independent methods → interface work can be aimed | No convergent NTD-1 contact → do **not** order interface mutants. Track I continues as Kd + isolated-N-block binding + trans competition, all of which are residue-agnostic. Track D is unaffected |
+| **1** | Does **any** NTD-1 contact reproduce across cofold seeds and across the two docking runs, and at what ipTM? *(any contact — not one nominated pair)* | The N-block is the contacting domain on two independent methods → interface work can be aimed | No convergent NTD-1 contact → do **not** order interface mutants. Track I continues as Kd + isolated-N-block binding + trans competition, all of which are residue-agnostic. Track D is unaffected |
 | **2** | aRES monomeric by SEC-MALS/AUC? | 1:1 stoichiometry arithmetic holds | Re-do every mass, mask and particle-count figure. A ~100 kDa aRES dimer is unresolvable from 92 kDa gp5·TrxA by mass photometry (6GW6 precedent) |
 | **3** | N-block soluble + cooperative Tm + CD-consistent + ~1 Zn? | **Track D opens.** Crystallisation plates, SAXS, (NMR) | Boundary redesign from limited proteolysis; if all boundaries fail, the N-block is not autonomously folding — a real result about the family — and all structural work moves to full-length aRES |
 | **4** | gp5·TrxA ≥0.5 mg by week 6? | Track I opens | Track I reduces to functional assays on the commercial enzyme. Put everything into Track D. **Decide this honestly at week 6, not week 10** |
@@ -373,7 +339,7 @@ Do it at the SPC, not at a beamline. Analytical SEC + DLS + nanoDSF + A280 answe
 
 So you know these were considered and rejected rather than overlooked.
 
-**Cryo-EM (the whole arm, as a rotation deliverable).** The informative N-block is 13 kDa — 9% of a 143 kDa particle — on a pLDDT-54 hinge; the most likely successful outcome is a 3.5 Å map of gp5·TrxA + RES domain with the answer-bearing lobe smeared into a 10 Å cloud. Protein by week 4 + screening + collection + processing lands at week 14–15 with zero slack. **Keep**: the gp5·TrxA-alone same-session control and the post-dock unassigned-volume check (the two defences against silent dissociation producing a beautiful map of nothing), the decision record that gp5·TrxA already *is* a 92 kDa rigid fiducial with a 2.2 Å reference so no nanobody/megabody/MBP fusion is needed, and the simulation control run on simulated data in week 2. **Note**: cryo-EM cannot resolve the S122–D104 hydrogen bond — that loop is deleted from 1T7P and exists only in models. If that contact is the actual goal, cryo-EM is the wrong instrument.
+**Cryo-EM (the whole arm, as a rotation deliverable).** The informative N-block is 13 kDa — 9% of a 143 kDa particle — on a pLDDT-54 hinge; the most likely successful outcome is a 3.5 Å map of gp5·TrxA + RES domain with the answer-bearing lobe smeared into a 10 Å cloud. Protein by week 4 + screening + collection + processing lands at week 14–15 with zero slack. **Keep**: the gp5·TrxA-alone same-session control and the post-dock unassigned-volume check (the two defences against silent dissociation producing a beautiful map of nothing), the decision record that gp5·TrxA already *is* a 92 kDa rigid fiducial with a 2.2 Å reference so no nanobody/megabody/MBP fusion is needed, and the simulation control run on simulated data in week 2. **Note**: cryo-EM cannot resolve a single hydrogen bond in that loop — the loop is deleted from 1T7P and exists only in models. If a specific contact is the actual goal, cryo-EM is the wrong instrument.
 
 **Focused classification of the N-block.** Gated on a Krios dataset that will not exist; its negative is interpretable only if a multi-week matched-SNR simulation control passes; and the apo reference it needs for the autoinhibition comparison does not exist.
 

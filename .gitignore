@@ -10,6 +10,9 @@ data/structures/*.mmcif
 
 # Docking and prediction output (keep the summaries in results/, not the raw runs)
 analysis/docking/**/*.pdb
+# HADDOCK Bokeh analysis plots: the numbers in them are extracted to results/ by
+# analysis/scripts/haddock_cluster_stats.py, which is the durable record
+analysis/docking/**/plots/*.html
 analysis/afold/**/*.cif
 analysis/afold/**/*.pdb
 analysis/afold/**/*.zip

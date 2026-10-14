@@ -3,10 +3,10 @@
 > **Update (Oct 12, 2026).** This document was written before the existing work in `notes/vault/`
 > was available. It is still correct in its logic, but two things are now better established and
 > one framing here is superseded — see **`05_status_after_vault_integration.md`**:
-> - The existing aRES×gp5 cofold already places gp5 **Ser122** in H-bond contact with aRES
->   **Asp104**, which lies inside the N-terminal block. **But treat this weakly**: it is one seed at
->   poor ipTM. H1 is supported by domain architecture and the escape-mutant genetics, *not* by this
->   contact. See `docs/08` §"D104 is NOT load-bearing".
+> - The existing aRES×gp5 cofold placed a specific residue pair across the interface. **That reading
+>   has been dropped** — it was one seed at poor ipTM, it was never reproduced, and nothing in the
+>   project rests on it any more ([`09` §4](09_blind_zn_run_results.md)). H1 is supported by domain
+>   architecture and the escape-mutant genetics, *not* by any cofold contact.
 > - **PDB 1T7P lacks residues 118–123**, so the epitope loop is not in any experimental structure.
 >   The "well-defined helix-loop-helix" framing in §3 below overstates what is known.
 > - Real domain boundaries: N-block **1–120**, hinge 120–125, RES side **126–447**
@@ -298,12 +298,19 @@ Listed so they are on record before the data comes in.
 | **P5** | Mutating that patch kills defense but preserves NADase | plaque assay + NAD⁺ assay, vs. R182A control | medium |
 | **P6** | RES domain alone is constitutively toxic (autoinhibition) | single construct, toxicity assay | low |
 | **P7** | HEPN-NTD1 proteins are also phage-triggered defense systems | bioinformatics first, then cloning | high |
-| **P8** | gp5 **S122A** discriminates direct contact from backbone rigidity | co-expression toxicity (Fig. 4G) + pull-down (Fig. 4H) | **low — best ratio in the project** |
-| **P9** | aRES **D104A/D104N** lose responsiveness to WT gp5 but keep NADase | 4G/4H + NAD⁺ assay, vs R182A/E236A controls | low |
+| **P8** | gp5 **S122A** discriminates the serine hydroxyl from the proline's backbone rigidity as the reason S122P escapes | co-expression toxicity (Fig. 4G) + pull-down (Fig. 4H) | **low — best ratio in the project** |
+| ~~P9~~ | *withdrawn.* Tested a single cofold-derived residue pair by mutating the aRES side of it. The pair was not reproduced and is dropped ([`09` §4](09_blind_zn_run_results.md)); the number is left vacant rather than reused | — | — |
+| **P10** | aRES **E89A / E93A / D90A** and gp5 **R111A** lose responsiveness while retaining NADase | 4G/4H + NAD⁺ assay, vs R182A/E236A controls | low |
 
-P8 and P9 come out of the cofold result in `notes/vault/` — see
-`05_status_after_vault_integration.md` §4, which also explains why neither needs mutant phages.
-P9 would be the **first functional test ever aimed at PF18870**.
+**P8 needs no model.** S122P is one of the paper's two escape mutations, so asking whether the
+hydroxyl or the proline's backbone rigidity is responsible is a question the genetics already poses.
+See `05_status_after_vault_integration.md` §4 for why it needs no mutant phages.
+
+**P10 is the first functional test ever aimed at PF18870**, and it tests the charge-complementarity
+model — acidic NTD-1 against the loop's basic patch — rather than one predicted contact. E89 is
+acidic in all three orthologs, E93 loses its charge in both, and D90 is invariant, so the three ask
+different questions and are not interchangeable
+([`09` §5](09_blind_zn_run_results.md), [`10` §6](10_ortholog_zn_cofolds.md)).
 
 **P5 carries a critical control design note:** an NTD-1 mutant that abolishes defense is only
 interesting if the protein is still a competent NADase. You must show loss of *defense* with

@@ -120,8 +120,9 @@ aRES carries six Cys in residues 1--120 (C8, C11, C31, C34, \textbf{C78, C96}) &
   Re-checked against the repository's own coordinates\\
 No lysine anywhere in aRES 49--120 & Verified & Same --- all ten N-block lysines sit in the Zn ribbon.
   This constrains amine-reactive crosslinking directly\\
-gp5 Ser122 OG hydrogen-bonds aRES Asp104 (3.06\,\AA) & \textbf{Weak} & One AlphaFold3 cofold, one
-  seed, poor ipTM. \emph{Not} load-bearing --- see \S\ref{sec:predictions}\\
+A specific gp5--aRES residue pair from the cofold & \textbf{Dropped} & One AlphaFold3 cofold, one
+  seed, poor ipTM; never reproduced (0/28 docking models, 16\,\AA{} apart). Removed from the project
+  as a claim and as a design basis --- see \S\ref{sec:predictions}\\
 aRES is a monomer, and the complex is 1:1 & \textbf{Assumed} & Never measured. The only solved
   RES-NADase structure (6GW6) is built on a RES toxin \emph{dimer}\\
 \bottomrule
@@ -136,23 +137,25 @@ a downstream month was going to be wasted.
 
 \paragraph{P1 --- the AlphaFold3 cofold interface is real.}
 Current evidence: one cofold, one pose. The killing experiment is an interface-confidence audit:
-ipTM, interface PAE, and the per-seed frequency of the D104--S122 contact. If it appears in 1 of 5
-seeds, stop before ordering a primer.
+ipTM, interface PAE across the interface, and the per-seed recurrence of \emph{any} NTD-1 contact. If
+no contact survives more than 1 of 5 seeds, stop before ordering a primer. Let the audit nominate
+contacts rather than testing a pair chosen in advance.
 
 \gap{P1 interface-confidence audit}{Fill in from the cofold outputs: ipTM = \val{1.6cm}, mean
-interface PAE = \val{1.6cm}\,\AA, D104--S122 contact present in \val{0.8cm} of \val{0.8cm} seeds.
-Blocked only by G\ref{gapcofold} (the model files are not in the repo). This is free and gates
-everything downstream of the cofold.}
+interface PAE = \val{1.6cm}\,\AA, most reproducible NTD-1 contact = \val{2.5cm}, present in
+\val{0.8cm} of \val{0.8cm} seeds. Blocked only by G\ref{gapcofold} (the model files are not in the
+repo). This is free and gates everything downstream of the cofold.}
 
 \paragraph{P2 --- the gp5 100--125 loop contacts the aRES N-block.}
-Note the restatement: the earlier form, ``Ser122 contacts Asp104'', overstates one low-ipTM seed.
-Killed by zero-length XL-MS (gp5 K103/K114/K118 to an aRES acidic residue in 49--120), and by the
+Stated at domain resolution on purpose. It rests on the escape-mutant genetics plus the blind run's
+28/28 recovery of R111 and G117 --- not on any cofold pair. Killed by zero-length XL-MS (gp5
+K103/K114/K118 to any aRES acidic residue in 49--120), and by the
 \textbf{gp5($\Delta$118--123)$\cdot$TrxA} activation test --- a published, catalytically competent
-deletion (1T7P/1TK0) that removes G121/S122 outright. If $\Delta$118--123 still activates aRES,
-S122 is not the contact.
+deletion (1T7P/1TK0) that removes the tip of the loop outright. If $\Delta$118--123 still activates
+aRES, the loop tip is not the trigger.
 
 \gap{Does gp5($\Delta$118--123) still activate aRES?}{One clone, one activation assay --- and it
-decides whether the entire S122 story survives. Result: \val{3cm}. This is the highest
+decides whether the loop tip matters at all. Result: \val{3cm}. This is the highest
 information-per-effort experiment in the project.}
 
 \paragraph{P3 --- NTD-1 is the sensor module.}
@@ -242,7 +245,7 @@ the HMM --- the failure mode here is silent, not loud.}
 \gap{The cofold model files}{\label{gapcofold}The vault has figures but no \texttt{.cif}/\texttt{.pdb}.
 With the coordinates in \texttt{data/structures/}, \texttt{analysis/scripts/interface\_contacts.py}
 gives the full interface contact list, the NTD-1 vs RES breakdown, and the seed-to-seed
-reproducibility of the S122--D104 contact in one command --- which is exactly G1. Status:
+reproducibility of every interface contact in one command --- which is exactly G1. Status:
 \val{2cm}.}
 
 \gap{Supplementary Tables S2/S3/S4 and Fig.~1B at full resolution}{Needed for the homolog set and to

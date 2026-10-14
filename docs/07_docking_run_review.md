@@ -186,9 +186,9 @@ Write that down before looking at the output.
 
 Unchanged from `docs/06` §4 — neither of these depends on docking converging:
 
-1. **AF3 seed replicates.** Is the S122–D104 contact in `notes/vault/` reproducible across 5 seeds,
-   or is it one lucky model? Everything structural rests on that one cofold.
-2. **Is aRES D104 conserved?** If the equivalent aspartate is present in the T7-responsive homologs
-   (UC5, S_34AVR) and absent in GN04826, which does **not** respond to T7 (`docs/06` §1), that is an
-   independent evolutionary argument for the interface — and it needs three sequences, not a night
-   of compute.
+1. **AF3 seed replicates.** Does *any* NTD-1 contact in the `notes/vault/` cofold reproduce across 5
+   seeds, and at what ipTM? Run this as a general interface-reproducibility check — not to rescue a
+   particular residue pair, which is how the earlier version of this item was framed.
+2. **The functional battery on the charge model** — aRES E89A / E93A / D90A and gp5 R111A through
+   4G/4H (`docs/09` §5, `docs/10` §6). These test the acidic-NTD-1-against-basic-loop reading
+   directly, they are plasmid-only, and none of them depends on docking having converged.

@@ -174,7 +174,8 @@ the rest of the range, which is exactly the modularity H2 predicts.
 
 1. **λ P (then O, Gam) co-expression with UC5 aRES** — Fig. 4G format, S_34AVR as negative control
 2. **UC5 × GN04826 NTD-1 chimeras**, T7 plaque assay — start cloning now, long lead time
-3. **gp5 S122A + aRES D104A** through 4G/4H (`docs/05` §4)
+3. **aRES E89A / E93A / D90A + gp5 R111A** through 4G/4H (`docs/09` §5, `docs/10` §6), plus
+   **gp5 S122A** (`docs/05` §4)
 4. T2 vs T4 gp43 alignment — free, do it this week
 5. Re-measure the three PyMOL panels consistently (`docs/05` §3)
 
